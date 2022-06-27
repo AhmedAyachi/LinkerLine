@@ -12,3 +12,4 @@ The original leaderline class always inserts the line svg element in body. Somet
 * new Props :
     * element : the line svg element
 * Absolute positioning
+* Scroll positioning
