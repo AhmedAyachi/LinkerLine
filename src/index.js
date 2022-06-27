@@ -26,7 +26,7 @@ export default class LeaderLine extends Line {
         const {style}=element,{scrollLeft,scrollTop}=parent,{left,top}=parent.getBoundingClientRect();
         style.transform=`translate(${-1*(left-scrollLeft)}px,${-1*(top-scrollTop)}px)`;
     }
-    show(s){
+    show(){
         super.show.apply(this,arguments);
         this.position();
     }
