@@ -1,0 +1,19 @@
+{
+  "name": "leaderline",
+  "version": "1.0.7",
+  "description": "An extension to the LeaderLine project: adding parent element,scroll position, absolute parent positioning",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "LeaderLine",
+    "Scroll",
+    "LeaderLine",
+    "absolute",
+    "positioning",
+    "position"
+  ],
+  "author": "Ahmed Ayachi",
+  "license": "ISC"
+}
