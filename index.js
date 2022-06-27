@@ -4,7 +4,7 @@ import Line from "./LeaderLine";
 export default class LeaderLine extends Line { 
     
     element;parent;
-    onResize;
+    #onResize;
 
     constructor(options){
         super(options);
@@ -13,10 +13,10 @@ export default class LeaderLine extends Line {
         if(parent instanceof HTMLElement){
             this.parent=parent;
             parent.appendChild(this.element);
-            this.onResize=()=>{
+            this.#onResize=()=>{
                 this.position();
             }
-            window.addEventListener("resize",this.onResize);
+            window.addEventListener("resize",this.#onResize);
             this.position();
         }
     }
@@ -28,7 +28,7 @@ export default class LeaderLine extends Line {
     }
     remove(){
         document.body.appendChild(this.element);
-        window.removeEventListener("resize",this.onResize);
+        window.removeEventListener("resize",this.#onResize);
         super.remove();
     }
 }
