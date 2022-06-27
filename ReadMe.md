@@ -9,5 +9,6 @@ The original leaderline class always inserts the line svg element in body. Somet
 ## What's new ?
 * New options :
     * parent : where to insert the line element, default to document.body
+* new Props :
     * element : the line svg element
 * Absolute positioning
