@@ -8,8 +8,8 @@ export default class LeaderLine extends Line {
 
     constructor(options){
         super(options);
-        const {parent}=options;
         this.element=document.body.querySelector(`:scope>.leader-line:last-of-type`);
+        const {parent}=options;
         if(parent instanceof HTMLElement){
             this.parent=parent;
             parent.appendChild(this.element);
