@@ -1,5 +1,5 @@
 import Line from "./LeaderLine";
-import css from "./index.css";
+import css from "./index.module.css";
 
 
 export default class LeaderLine extends Line { 
