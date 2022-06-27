@@ -3,7 +3,7 @@ import Line from "./LeaderLine";
 
 export default class LeaderLine extends Line { 
     
-    element;_parent;
+    element;parent;
     #onResize;
 
     constructor(options){
@@ -11,7 +11,7 @@ export default class LeaderLine extends Line {
         this.element=document.body.querySelector(`:scope>.leader-line:last-of-type`);
         const {parent}=options;
         if(parent instanceof HTMLElement){
-            this._parent=parent;
+            this.parent=parent;
             parent.appendChild(this.element);
             this.#onResize=()=>{
                 this.position();
@@ -20,13 +20,10 @@ export default class LeaderLine extends Line {
             this.position();
         }
     }
-    get parent(){
-        return this._parent;
-    }
     position(){
         super.position();
-        const {element,_parent}=this;
-        const {style}=element,{scrollLeft,scrollTop}=_parent,{left,top}=_parent.getBoundingClientRect();
+        const {element,parent}=this;
+        const {style}=element,{scrollLeft,scrollTop}=parent,{left,top}=parent.getBoundingClientRect();
         style.transform=`translate(${-1*(left-scrollLeft)}px,${-1*(top-scrollTop)}px)`;
     }
     remove(){
