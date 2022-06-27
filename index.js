@@ -1,4 +1,5 @@
 import Line from "./LeaderLine";
+import css from "./index.css";
 
 
 export default class LeaderLine extends Line { 
@@ -12,6 +13,7 @@ export default class LeaderLine extends Line {
         const {parent}=options;
         if(parent instanceof HTMLElement){
             this.parent=parent;
+            parent.classList.add(css.parent);
             parent.appendChild(this.element);
             this.#onResize=()=>{
                 this.position();
