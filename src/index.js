@@ -3,10 +3,8 @@ import css from "./index.module.css";
 
 
 export default class LeaderLine extends Line { 
-    
     element;parent;
     #onResize;
-
     constructor(options){
         super(options);
         this.element=document.body.querySelector(`:scope>.leader-line:last-of-type`);
@@ -27,6 +25,10 @@ export default class LeaderLine extends Line {
         const {element,parent}=this;
         const {style}=element,{scrollLeft,scrollTop}=parent,{left,top}=parent.getBoundingClientRect();
         style.transform=`translate(${-1*(left-scrollLeft)}px,${-1*(top-scrollTop)}px)`;
+    }
+    show(){
+        super.show(showEffectName,animOptions);
+        this.position();
     }
     remove(){
         document.body.appendChild(this.element);
