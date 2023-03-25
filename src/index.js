@@ -5,10 +5,10 @@ import css from "./index.module.css";
 export default class LeaderLine extends Line { 
     element;parent;
     #onResize;
-    constructor(options){
-        super(options);
+    constructor(props){
+        super(props);
         this.element=document.body.querySelector(`:scope>.leader-line:last-of-type`);
-        const {parent}=options;
+        const {parent}=props;
         if(parent instanceof HTMLElement){
             this.parent=parent;
             parent.classList.add(css.parent);
