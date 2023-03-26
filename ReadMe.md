@@ -11,5 +11,5 @@ The original leaderline class always inserts the line svg element in body. Somet
     * parent : where to insert the line element, default to document.body
 * new Props :
     * element : the line svg element
-* Absolute positioning
-* Scroll positioning
+* Absolute positioning : even if the parent element changes position
+* Scroll positioning : even if the start/end element exceeds the parent width/height and the parent becomes scrollable
