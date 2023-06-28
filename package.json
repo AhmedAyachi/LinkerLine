@@ -8,12 +8,11 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "LeaderLine",
-    "Scroll",
-    "LeaderLine",
-    "absolute",
-    "positioning",
-    "position"
+    "leader","line","markup",
+    "arrow","attention","highlight",
+    "spotlight","bubble","svg",
+    "LeaderLine","Scroll","LeaderLine",
+    "absolute","positioning","position"
   ],
   "author": "Ahmed Ayachi",
   "license": "ISC"
