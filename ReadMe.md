@@ -21,7 +21,7 @@ This library tackles all the issues mentioned above and provides more  options a
 |element|The leaderline svg element|
 
 ## Illustration
-![Illustration](https://github.com/AhmedAyachi/LeaderLine/blob/master/Assets/Illustration.gif)
+![Illustration](https://github.com/AhmedAyachi/RepoIllustrations/blob/main/LeaderLine/Illustration.gif)
 
 ## How to use it ?
 Just install the current git repo using npm or any package manager of your choice :
