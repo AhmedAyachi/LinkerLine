@@ -1,5 +1,5 @@
 ## What is this ?
-This LeaderLine version is an extension to the original LeaderLine project https://github.com/anseki/leader-line .
+This LeaderLine version is an extension to the original LeaderLine project https://github.com/anseki/leader-line v1.0.7 .
 
 ## Why using it ?
 The original leaderline class lacks:
@@ -19,6 +19,9 @@ This library tackles all the issues mentioned above and provides more  options a
 |New Properties|Description|
 |--|--|
 |element|The leaderline svg element|
+
+## Illustration
+![Illustration](https://github.com/AhmedAyachi/LeaderLine/blob/master/Assets/Illustration.gif)
 
 ## How to use it ?
 Just install the current git repo using npm or any package manager of your choice :
