@@ -5,11 +5,6 @@
  * project docs
  */
 export default class LeaderLine {
-    readonly parent:HTMLElement;
-    /**
-     * The leaderline svg element
-     */
-    readonly element:SVGElement;
     constructor(props:{
         /**
         * The element where to insert the line svg element
@@ -22,4 +17,8 @@ export default class LeaderLine {
     position():void;
     show():void;
     remove():void;
+    /**
+     * The leaderline svg element
+     */
+    readonly element:SVGElement;
 }

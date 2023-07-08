@@ -1,17 +1,15 @@
 import Line from "./LeaderLine";
-import css from "./index.module.css";
 
 
 export default class LeaderLine extends Line { 
-    element;parent;
+    #element;
     #onResize;
     constructor(props){
         super(props);
-        this.element=document.body.querySelector(`:scope>.leader-line:last-of-type`);
+        this.#element=document.body.querySelector(`:scope>.leader-line:last-of-type`);
         const {parent}=props;
         if(parent instanceof HTMLElement){
-            this.parent=parent;
-            parent.classList.add(css.parent);
+            parent.style.position="relative";
             parent.appendChild(this.element);
             this.#onResize=()=>{
                 this.position();
@@ -22,7 +20,7 @@ export default class LeaderLine extends Line {
     }
     position(){
         super.position();
-        const {element,parent}=this;
+        const {element}=this,parent=element.parentNode;
         const {style}=element,{scrollLeft,scrollTop}=parent,{left,top}=parent.getBoundingClientRect();
         style.transform=`translate(${-1*(left-scrollLeft)}px,${-1*(top-scrollTop)}px)`;
     }
@@ -34,5 +32,9 @@ export default class LeaderLine extends Line {
         document.body.appendChild(this.element);
         window.removeEventListener("resize",this.#onResize);
         super.remove();
+    }
+
+    get element(){
+        return this.#element;
     }
 }

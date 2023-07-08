@@ -1,6 +1,6 @@
 {
   "name": "leaderline",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "An extension to the LeaderLine project: adding parent element,scroll position, absolute parent positioning",
   "main": "src/index.js",
   "types": "src/index.d.ts",
