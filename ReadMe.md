@@ -20,13 +20,19 @@ This library tackles all the issues mentioned above and provides more  options a
 |--|--|
 |element|The leaderline svg element|
 
+Changes :
+ 1. pointAnchor, areaAnchor, mouseHoverAnchor are renamed to PointAnchor, AreaAnchor, MouseHoverAnchor.
+ 2. CaptionLabel and PathLabel are merged into Label. The Label has an option named "on" that takes as a value either "path" or "element".
+ 3. animation object "timing" property is renamed to "easing".
+ 4. dash "len" property is renamed to "length".
+ 
 ## Illustration
 ![Illustration](https://github.com/AhmedAyachi/RepoIllustrations/blob/main/LeaderLine/Illustration.gif)
 
 ## How to use it ?
 Just install the current git repo using npm or any package manager of your choice :
 
-> npm install --save github:AhmedAyachi/LeaderLine
+    npm install --save github:AhmedAyachi/LeaderLine
 
 And then use it in your code as follows : 
 	
