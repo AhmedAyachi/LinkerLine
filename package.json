@@ -1,5 +1,5 @@
 {
-  "name": "@ahmedyachi/leaderline",
+  "name": "leaderline",
   "version": "1.0.10",
   "description": "An extension to the LeaderLine project: adding parent element,scroll position, absolute parent positioning",
   "main": "src/index.js",
