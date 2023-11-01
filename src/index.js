@@ -1,7 +1,7 @@
-import Line from "./LeaderLine";
+import LeaderLine from "./LeaderLine";
 
 
-export default class LeaderLine extends Line { 
+export default class LinkerLine extends LeaderLine { 
     #element;
     #onResize;
     constructor(props){
@@ -49,6 +49,11 @@ export default class LeaderLine extends Line {
         document.body.appendChild(this.element);
         window.removeEventListener("resize",this.#onResize);
         super.remove();
+    }
+
+    setOptions(options){
+        toLeaderLineDash(options.dash);
+        super.setOptions(options);
     }
 
     static PointAnchor(element,options){

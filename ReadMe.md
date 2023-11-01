@@ -1,8 +1,8 @@
 ## What is this ?
-This LeaderLine version is an extension to the original LeaderLine project https://github.com/anseki/leader-line v1.0.7 .
+This project is an extension to the original leader-line project https://github.com/anseki/leader-line v1.0.7.
 
 ## Why using it ?
-The original leaderline class lacks:
+The original LeaderLine class lacks:
 |Feature|Description|
 |--|--|
 |parent option|The original leaderline class always inserts the line svg element in body. In some cases, inserting the line in a specific element is required.|
@@ -30,15 +30,15 @@ Changes :
 ![Illustration](https://github.com/AhmedAyachi/RepoIllustrations/blob/main/LeaderLine/Illustration.gif)
 
 ## How to use it ?
-Just install the current git repo using npm or any package manager of your choice :
+Just install the package using npm or any package manager of your choice :
 
-    npm install --save github:AhmedAyachi/LeaderLine
+    npm install --save linkerline
 
 And then use it in your code as follows : 
 	
-	import LeaderLine from "leaderline";
+	import LinkerLine from "linkerline";
 	
-    const line=new LeaderLine({
+    const line=new LinkerLine({
 	    //...OriginalClassProps,
 	    parent:HTMLElement,// this is the new parent option
 	    start:HTMLElement,

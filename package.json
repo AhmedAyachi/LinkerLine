@@ -1,22 +1,19 @@
 {
-  "name": "leaderline",
-  "version": "1.0.10",
+  "name": "linkerline",
+  "version": "1.0.0",
   "description": "An extension to the LeaderLine project: adding parent element,scroll position, absolute parent positioning",
   "main": "src/index.js",
   "types": "src/index.d.ts",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "keywords": [
-    "leader","line","markup",
+    "leader","linker","line",
     "arrow","attention","highlight",
-    "spotlight","bubble","svg",
-    "LeaderLine","Scroll","LeaderLine",
+    "spotlight","bubble","markup",
+    "Scroll","markup","svg",
     "absolute","positioning","position"
   ],
   "repository":{
     "type": "git",
-    "url": "https://github.com/AhmedAyachi/LeaderLine"
+    "url": "https://github.com/AhmedAyachi/LinkerLine"
   },
   "author": "Ahmed Ayachi",
   "license": "MIT"

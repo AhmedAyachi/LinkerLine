@@ -4,33 +4,33 @@
  * please consider checking the original
  * project docs
  */
-export default class LeaderLine extends LeaderLineOptions {
-    constructor(props:LeaderLineProps);
+export default class LinkerLine extends LinkerLineOptions {
+    constructor(props:LinkerLineProps);
     /**
-     * The instance id, different from the leaderline svg element id
+     * The instance id, different from the linkerline svg element id
      */
     readonly id:Number;
 
     position():void;
     /**
-     * Shows the leaderline element
+     * Shows the linkerline element
      */
-    show(effectName:EffectName,animation:LeaderLineAnimation):void;
+    show(effectName:EffectName,animation:LinkerLineAnimation):void;
     /**
-     * Hides the leaderline element
+     * Hides the linkerline element
      */
-    hide(effectName:EffectName,animation:LeaderLineAnimation):void;
+    hide(effectName:EffectName,animation:LinkerLineAnimation):void;
     /**
-     * Removes the leaderline from DOM
+     * Removes the linkerline from DOM
      */
     remove():void;
     /**
      * Same as setOptions method of the old implementation
      * @param props 
      */
-    setOptions(props:LeaderLineOptions):void;
+    setOptions(props:LinkerLineOptions):void;
     /**
-     * The leaderline svg element
+     * The linkerline svg element
      */
     readonly element:SVGElement;
 
@@ -39,7 +39,7 @@ export default class LeaderLine extends LeaderLineOptions {
         y:number,
     }):PointAnchor;
 
-    static AreaAnchor<Shape extends keyof LeaderLineAnchorOptions>(element:HTMLElement,options:{
+    static AreaAnchor<Shape extends keyof LinkerLineAnchorOptions>(element:HTMLElement,options:{
         x:number,
         y:number,
         /**
@@ -49,12 +49,12 @@ export default class LeaderLine extends LeaderLineOptions {
         color:string,
         fillColor:string,
         size:number,
-        dash:LeaderLineDash,
-    }&LeaderLineAnchorOptions[Shape]):AreaAnchor;
+        dash:LinkerLineDash,
+    }&LinkerLineAnchorOptions[Shape]):AreaAnchor;
 
     static MouseHoverAnchor(element:HTMLElement,options:{
         showEffectName:EffectName,
-        animation:LeaderLineAnimation,
+        animation:LinkerLineAnimation,
         style?:CSSStyleDeclaration,
         hoverStyle?:CSSStyleDeclaration,
         /**
@@ -75,20 +75,19 @@ export default class LeaderLine extends LeaderLineOptions {
          * @default "transparent"
          */
         outlineColor:string,
-    }):LeaderLineLabel;
+    }):LinkerLineLabel;
 };
 
-interface LeaderLineProps extends LeaderLineOptions {
+interface LinkerLineProps extends LinkerLineOptions {
     /**
     * The element where to insert the line svg element
     * @default document.body
     */
     parent:HTMLElement;
     hidden:boolean;
-    dash:LeaderLineDash;
 }
 
-class LeaderLineOptions {
+interface LinkerLineOptions {
     start:HTMLElement;
     end:HTMLElement;
     /**
@@ -124,7 +123,7 @@ class LeaderLineOptions {
     /**
      * @default "fluid"
      */
-    path:LeaderLinePath;
+    path:LinkerLinePath;
     size:Number;
     outline:Boolean;
     /**
@@ -138,11 +137,11 @@ class LeaderLineOptions {
     /**
      * @default "behind"
      */
-    startPlug:LeaderLinePlug;
+    startPlug:LinkerLinePlug;
     /**
      * @default "arrow1"
      */
-    endPlug:LeaderLinePlug;
+    endPlug:LinkerLinePlug;
     startPlugColor:String;
     endPlugColor:String;
     /**
@@ -183,59 +182,60 @@ class LeaderLineOptions {
     captionLabel:String;
     pathLabel:String;
     /**
-     * Sets the effect with specified Object that can have properties as the following options.
-     * Or true to enable it with all default options
+     * Sets the effect with specified Object that can have properties as the following options,
+     * or true to enable it with all default options
      */
-    set dash(value:LeaderLineDash):void;
-    get dash():undefined;
+    dash:boolean|LinkerLineDash;
+    /* set dash(value:LinkerLineDash);
+    get dash():LinkerLineDash; */
     /**
      * @default "auto"
      */
-    startSocket:LeaderLineSocket;
+    startSocket:LinkerLineSocket;
     /**
      * @default "auto"
      */
-    endSocket:LeaderLineSocket;
-    /**
-     * If "auto" is specified, it is adjusted to gravity suitable for current path option automatically.
-     * @default "auto"
-     */
-    startSocketGravity:LeaderLineSocketGravity;
+    endSocket:LinkerLineSocket;
     /**
      * If "auto" is specified, it is adjusted to gravity suitable for current path option automatically.
      * @default "auto"
      */
-    endSocketGravity:LeaderLineSocketGravity;
+    startSocketGravity:LinkerLineSocketGravity;
+    /**
+     * If "auto" is specified, it is adjusted to gravity suitable for current path option automatically.
+     * @default "auto"
+     */
+    endSocketGravity:LinkerLineSocketGravity;
 }
 
 type EffectName="none"|"fade"|"draw";
-type LeaderLineAnimation={
+type LinkerLineAnimation={
     /**
      * in milliseconds
      */
     duration:Number,
     easing:"ease"|"linear"|"ease-in"|"ease-out"|"ease-in-out"|Number[],
 }
-type LeaderLinePath="straight"|"arc"|"fluid"|"magnet"|"grid";
-type LeaderLineSocket="auto"|"top"|"right"|"bottom"|"left";
-type LeaderLineSocketGravity="auto"|Number|Number[];
-type LeaderLinePlug="disc"|"square"|"arrow1"|"arrow2"|"arrow3"|"hand"|"crosshair"|"behind";
-type LeaderLineDash=Boolean|{
+type LinkerLinePath="straight"|"arc"|"fluid"|"magnet"|"grid";
+type LinkerLineSocket="auto"|"top"|"right"|"bottom"|"left";
+type LinkerLineSocketGravity="auto"|Number|Number[];
+type LinkerLinePlug="disc"|"square"|"arrow1"|"arrow2"|"arrow3"|"hand"|"crosshair"|"behind";
+type LinkerLineDash=Boolean|{
     length:"auto"|Number,
     gap:"auto"|Number,
-    animation:Boolean|LeaderLineAnimation,
+    animation:Boolean|LinkerLineAnimation,
 };
 
-type LeaderLineEntity={
+type LinkerLineEntity={
     readonly _id:Number,
     readonly isRemoved:Boolean,
 }
-interface PointAnchor extends LeaderLineEntity {};
-interface AreaAnchor extends LeaderLineEntity {};
-interface MouseHoverAnchor extends LeaderLineEntity {};
-interface LeaderLineLabel extends LeaderLineEntity {};
+interface PointAnchor extends LinkerLineEntity {};
+interface AreaAnchor extends LinkerLineEntity {};
+interface MouseHoverAnchor extends LinkerLineEntity {};
+interface LinkerLineLabel extends LinkerLineEntity {};
 
-type LeaderLineAnchorOptions={
+type LinkerLineAnchorOptions={
     "rect":{
         /**
          * @default "110%"
