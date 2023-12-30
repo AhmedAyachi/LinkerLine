@@ -7,7 +7,7 @@ export default class LinkerLine extends LeaderLine {
     constructor(props){
         props.hide=props.hidden;
         super(props);
-        this.#element=document.body.querySelector(`:scope>.leader-line:last-of-type`);
+        this.#element=document.body.querySelector(":scope>.linker-line:last-of-type");
         const {parent}=props;
         if(parent instanceof HTMLElement){
             parent.style.position="relative";
@@ -56,19 +56,80 @@ export default class LinkerLine extends LeaderLine {
         super.setOptions(options);
     }
 
+    static definePlug(options){
+        const {name}=options;
+        let defroot=document.body.querySelector(":scope>#linker-line-defs");
+        if(!defroot){
+            const start=document.body.appendChild(document.createElement("div"));
+            const end=document.body.appendChild(document.createElement("div"));
+            new LeaderLine({start,end}).remove();
+            start.remove();
+            end.remove();
+            defroot=document.body.querySelector(":scope>#linker-line-defs");
+        }
+        const defsEl=defroot.querySelector(":scope>defs");
+        const defEl=defsEl.querySelector(`:scope>#linker-line-${name}`);
+        if(defEl) throw new Error(`Plug "${name}" already defined`);
+        else{
+            const {shape}=options;
+            if(shape){
+                const {type}=shape;
+                const element=document.createElementNS("http://www.w3.org/2000/svg",type);
+                element.id="linker-line-"+name;
+                delete shape.type;
+                /* for(const key in shape){
+                    element.setAttribute(key,shape[key]);
+                } */
+                defsEl.appendChild(element);
+                const {width,height,spacing}=shape;
+                if(type==="rect"){
+                    element.setAttribute("x",-width/2);
+                    element.setAttribute("y",-height/2);
+                    element.setAttribute("width",width);
+                    element.setAttribute("height",height);
+                }
+                else if(type==="ellipse"){
+                    /* element.setAttribute("cx",-width/2);
+                    element.setAttribute("cy",-height/2);
+                    element.setAttribute("r",width); */
+                }
+                LinkerLine.plugs[name]={
+                    elmId:element.id,
+                    bBox:{
+                        left:-width/2,
+                        right:width/2,
+                        top:-height/2,
+                        bottom:height/2,
+                        width:width,
+                        height:height,
+                    },
+                    widthR:width/4,
+                    heightR:height/4,
+                    bCircle:Math.max(width,height)/2,
+                    sideLen:Math.max(width,height)/2,
+                    backLen:Math.max(width,height)/2,
+                    overhead:spacing||(width/2),
+                    outlineBase:2,
+                    outlineMax:1.5,
+                }
+                LinkerLine.names[name]=name;
+            }
+        }
+    }
+
     static PointAnchor(element,options){
-        return Line.pointAnchor(element,options);
+        return LeaderLine.pointAnchor(element,options);
     }
 
     static AreaAnchor(element,options){
-        return Line.areaAnchor(element,options);
+        return LeaderLine.areaAnchor(element,options);
     }
 
     static MouseHoverAnchor(element,options){
         if(options){
             options.animOptions=toLeaderLineAnimationOptions(options.animation);
         }
-        return Line.mouseHoverAnchor(element,options);
+        return LeaderLine.mouseHoverAnchor(element,options);
     }
 
     static Label(text,options){

@@ -34,6 +34,17 @@ export default class LinkerLine extends LinkerLineOptions {
      */
     readonly element:SVGElement;
 
+    static definePlug(options:{
+        name:string,
+        svg:SVGElement|(()=>SVGElement)|string|(()=>string),
+        shape?:{
+            type:"rect"|"ellipse",
+            width:number,
+            height:number,
+            spacing:number,
+        },
+    }):void;
+
     static PointAnchor(element:HTMLElement,options:{
         x:number,
         y:number,
@@ -77,6 +88,7 @@ export default class LinkerLine extends LinkerLineOptions {
         outlineColor:string,
     }):LinkerLineLabel;
 };
+
 
 interface LinkerLineProps extends LinkerLineOptions {
     /**
