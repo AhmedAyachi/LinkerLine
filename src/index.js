@@ -57,18 +57,18 @@ export default class LinkerLine extends LeaderLine {
     }
 
     static PointAnchor(element,options){
-        return Line.pointAnchor(element,options);
+        return LeaderLine.pointAnchor(element,options);
     }
 
     static AreaAnchor(element,options){
-        return Line.areaAnchor(element,options);
+        return LeaderLine.areaAnchor(element,options);
     }
 
     static MouseHoverAnchor(element,options){
         if(options){
             options.animOptions=toLeaderLineAnimationOptions(options.animation);
         }
-        return Line.mouseHoverAnchor(element,options);
+        return LeaderLine.mouseHoverAnchor(element,options);
     }
 
     static Label(text,options){
