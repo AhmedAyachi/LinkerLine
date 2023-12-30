@@ -80,7 +80,7 @@ export default class LinkerLine extends LeaderLine {
             }
             if(!options.outlineColor){options.outlineColor="transparent"};
         }
-        const LeaderLineEntity=Line[on==="path"?"pathLabel":"captionLabel"];
+        const LeaderLineEntity=LeaderLine[on==="path"?"pathLabel":"captionLabel"];
         return LeaderLineEntity(text,options);
         
     }
