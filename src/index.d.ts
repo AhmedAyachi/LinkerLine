@@ -36,23 +36,40 @@ export default class LinkerLine extends LinkerLineOptions {
 
     static definePlug(options:{
         name:string,
-        svg?:string|(()=>string),
-        shape?:{
-            type:"rect"|"ellipse",
-            width:number,
-            height:number,
-            spacing:number,
-        },
+        shape?:"rect"|"ellipse",
+        svg?:string|((color:string,weight:string)=>string),
+        src?:string,
+        /**
+         * sets the plug base width
+         * @default 
+         * 24 for src
+         * width attribute value for svg
+         * 0 for shape
+         */
+        width:number,
+        /**
+         * sets the plug base height
+         * @default 
+         * 24 for icons
+         * height attribute value for svg
+         * 0 for shapes
+         */
+        height:number,
+        margin?:number,
+        /**
+         * @default true
+         */
+        rotatable?:boolean,
     }):void;
 
     static PointAnchor(element:HTMLElement,options:{
-        x:number,
-        y:number,
+        x:number|string,
+        y:number|string,
     }):PointAnchor;
 
     static AreaAnchor<Shape extends keyof LinkerLineAnchorOptions>(element:HTMLElement,options:{
-        x:number,
-        y:number,
+        x:number|string,
+        y:number|string,
         /**
          * @default "rect"
          */
@@ -87,7 +104,7 @@ export default class LinkerLine extends LinkerLineOptions {
          */
         outlineColor:string,
     }):LinkerLineLabel;
-};
+}
 
 
 interface LinkerLineProps extends LinkerLineOptions {
@@ -242,10 +259,10 @@ type LinkerLineEntity={
     readonly _id:Number,
     readonly isRemoved:Boolean,
 }
-interface PointAnchor extends LinkerLineEntity {};
-interface AreaAnchor extends LinkerLineEntity {};
-interface MouseHoverAnchor extends LinkerLineEntity {};
-interface LinkerLineLabel extends LinkerLineEntity {};
+interface PointAnchor extends LinkerLineEntity {}
+interface AreaAnchor extends LinkerLineEntity {}
+interface MouseHoverAnchor extends LinkerLineEntity {}
+interface LinkerLineLabel extends LinkerLineEntity {}
 
 type LinkerLineAnchorOptions={
     "rect":{

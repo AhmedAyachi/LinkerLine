@@ -1,5 +1,5 @@
 import LeaderLine from "./LeaderLine";
-import definePlug from "./DefinePlug";
+import definePlug,{setLinePlugStyle} from "./DefinePlug";
 
 
 export default class LinkerLine extends LeaderLine { 
@@ -16,6 +16,7 @@ export default class LinkerLine extends LeaderLine {
             this.#onResize=()=>{requestAnimationFrame(()=>{this.position()})};
             window.addEventListener("resize",this.#onResize);
             this.position();
+            setLinePlugStyle(this);
         }
     }
 
