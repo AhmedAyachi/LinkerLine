@@ -36,7 +36,7 @@ export default class LinkerLine extends LinkerLineOptions {
 
     static definePlug(options:{
         name:string,
-        svg:SVGElement|(()=>SVGElement)|string|(()=>string),
+        svg?:string|(()=>string),
         shape?:{
             type:"rect"|"ellipse",
             width:number,
@@ -265,6 +265,6 @@ type LinkerLineAnchorOptions={
         radius:number,
     },
     "polygon":{
-        points:(number|string)[][]
+        points:(number|string)[][],
     },
 }
