@@ -99,6 +99,7 @@ const toLeaderLineDash=(dash)=>{
     if(dash&&(typeof(dash)==="object")){
         toLeaderLineAnimationOptions(dash.animation);
         dash.len=dash.length;
+        delete dash.length;
     }
 }
 
