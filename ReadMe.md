@@ -78,7 +78,7 @@ It allows defining custom plugs via the static method LinkerLine.**definePlug( o
         color:"#73f5fa",
         size:3,
         startPlug:"star",
-		endPlug:"star",
+        endPlug:"star",
 	});
 
 For svgs, when a function is specified, the **color** and the **weight**  params will respectively make sure that the plug will match the line color or start/endPlugColor (if specified) properties and the line size property.
