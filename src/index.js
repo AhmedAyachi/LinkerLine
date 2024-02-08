@@ -20,10 +20,6 @@ export default class LinkerLine extends LeaderLine {
         }
     }
 
-    get element(){return this.#element};
-
-    get id(){return this._id};
-
     set dash(value){
         toLeaderLineDash(value);
         super.dash=value;
@@ -57,6 +53,16 @@ export default class LinkerLine extends LeaderLine {
         toLeaderLineDash(options.dash);
         super.setOptions(options);
     }
+
+    get element(){return this.#element};
+
+    get id(){return this._id};
+
+    get start(){return super.start};
+    get end(){return super.end};
+
+    get color(){return super.color};
+    get size(){return super.size};
 
     static definePlug(options){
         definePlug(options);
@@ -105,7 +111,7 @@ const toLeaderLineDash=(dash)=>{
 }
 
 const toLeaderLineAnimationOptions=(options)=>{
-    if(options){
+    if(options&&(typeof(options)==="object")){
         options.timing=options.easing;
         delete options.easing;
     };

@@ -9,7 +9,7 @@ export default class LinkerLine extends LinkerLineOptions {
     /**
      * The instance id, different from the linkerline svg element id
      */
-    readonly id:Number;
+    readonly id:number;
 
     position():void;
     /**
@@ -33,6 +33,23 @@ export default class LinkerLine extends LinkerLineOptions {
      * The linkerline svg element
      */
     readonly element:SVGElement;
+    /**
+     * Gets the line start element
+    */
+    readonly start:HTMLElement;
+    /**
+     * Gets the line end element
+    */
+    readonly end:HTMLElement;
+    /**
+     * Gets the line color
+    */
+    readonly color:string;
+    /**
+     * Gets the line size
+    */
+    readonly size:number;
+
 
     static definePlug(options:{
         name:string,
@@ -122,47 +139,26 @@ interface LinkerLineOptions {
     /**
      * @default "coral"
      */
-    color:String;
-    gradient:Boolean|{
-        startColor:String,
-        endColor:String,
+    color:string;
+    gradient:boolean|{
+        startColor:string,
+        endColor:string,
     };
-    dropShadow:Boolean|{
-        /**
-         * @default 2
-         */
-        dx:Number,
-        /**
-         * @default 4
-         */
-        dy:Number,
-        /**
-         * @default 3
-         */
-        blur:Number,
-        /**
-         * @default "#000"
-         */
-        color:String,
-        /**
-         * @default 0.8
-         */
-        opacity:Number,
-    };
+    dropShadow:LinkerLineDropShadow;
     /**
      * @default "fluid"
      */
     path:LinkerLinePath;
-    size:Number;
-    outline:Boolean;
+    size:number;
+    outline:boolean;
     /**
      * @default "indianred"
      */
-    outlineColor:String;
+    outlineColor:string;
     /**
      * @default 0.25
      */
-    outlineSize:Number;
+    outlineSize:number;
     /**
      * @default "behind"
      */
@@ -171,45 +167,45 @@ interface LinkerLineOptions {
      * @default "arrow1"
      */
     endPlug:LinkerLinePlug;
-    startPlugColor:String;
-    endPlugColor:String;
+    startPlugColor:string;
+    endPlugColor:string;
     /**
      * @default 1
      */
-    startPlugSize:Number;
+    startPlugSize:number;
     /**
      * @default 1
      */
-    endPlugSize:Number;
+    endPlugSize:number;
     /**
      * @default false
      */
-    startPlugOutline:Boolean;
+    startPlugOutline:boolean;
     /**
      * @default false
      */
-    endPlugOutline:Boolean;
+    endPlugOutline:boolean;
     /**
      * @default "auto"
      */
-    startPlugOutlineColor:String;
+    startPlugOutlineColor:string;
     /**
      * @default "auto"
      */
-    endPlugOutlineColor:String;
+    endPlugOutlineColor:string;
     /**
      * @default 1
      */
-    startPlugOutlineSize:Number;
+    startPlugOutlineSize:number;
     /**
      * @default 1
      */
-    endPlugOutlineSize:Number;
-    startLabel:String;
-    middleLabel:String;
-    endLabel:String;
-    captionLabel:String;
-    pathLabel:String;
+    endPlugOutlineSize:number;
+    startLabel:string;
+    middleLabel:string;
+    endLabel:string;
+    captionLabel:string;
+    pathLabel:string;
     /**
      * Sets the effect with specified Object that can have properties as the following options,
      * or true to enable it with all default options
@@ -242,22 +238,45 @@ type LinkerLineAnimation={
     /**
      * in milliseconds
      */
-    duration:Number,
-    easing:"ease"|"linear"|"ease-in"|"ease-out"|"ease-in-out"|Number[],
+    duration:number,
+    easing:"ease"|"linear"|"ease-in"|"ease-out"|"ease-in-out"|number[],
 }
 type LinkerLinePath="straight"|"arc"|"fluid"|"magnet"|"grid";
 type LinkerLineSocket="auto"|"top"|"right"|"bottom"|"left";
-type LinkerLineSocketGravity="auto"|Number|Number[];
+type LinkerLineSocketGravity="auto"|number|number[];
 type LinkerLinePlug="disc"|"square"|"arrow1"|"arrow2"|"arrow3"|"hand"|"crosshair"|"behind";
-type LinkerLineDash=Boolean|{
-    length:"auto"|Number,
-    gap:"auto"|Number,
-    animation:Boolean|LinkerLineAnimation,
+type LinkerLineDash=boolean|{
+    length:"auto"|number,
+    gap:"auto"|number,
+    animation:boolean|LinkerLineAnimation,
 };
 
+type LinkerLineDropShadow=boolean|{
+    /**
+     * @default 2
+     */
+    dx:number,
+    /**
+     * @default 4
+     */
+    dy:number,
+    /**
+     * @default 3
+     */
+    blur:number,
+    /**
+     * @default "#000"
+     */
+    color:string,
+    /**
+     * @default 0.8
+     */
+    opacity:number,
+}
+
 type LinkerLineEntity={
-    readonly _id:Number,
-    readonly isRemoved:Boolean,
+    readonly _id:number,
+    readonly isRemoved:boolean,
 }
 interface PointAnchor extends LinkerLineEntity {}
 interface AreaAnchor extends LinkerLineEntity {}
