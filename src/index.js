@@ -25,12 +25,12 @@ export default class LinkerLine extends LeaderLine {
         super.dash=value;
     }
 
-    position(){
+    position(){if(super.start.isConnected&&super.end.isConnected){
         super.position();
         const {element}=this,parent=element.parentNode;
         const {style}=element,{scrollLeft,scrollTop}=parent,{left,top}=parent.getBoundingClientRect();
         style.transform=`translate(${-1*(left-scrollLeft)}px,${-1*(top-scrollTop)}px)`;
-    }
+    }}
 
     show(effectName,options){
         toLeaderLineAnimationOptions(options);
