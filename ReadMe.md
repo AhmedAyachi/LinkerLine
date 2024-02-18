@@ -14,7 +14,7 @@ The original LeaderLine class lacks:
 This library tackles all the issues mentioned above and provides more  options and properties to the LeaderLine instance :
 |New Options|Description|
 |--|--|
-|parent|where to insert the line element, default to document.body|
+|parent|where to insert the line element, default to document.body in **<1.2.0** and to the line's end element parentNode in **>=1.2.0** |
 
 |New Properties|Description|
 |--|--|
