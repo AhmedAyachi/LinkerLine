@@ -48,6 +48,9 @@ And then use it in your code as follows :
     });
 	//line.element => returns the line svg element
 
+## positionAll [1.2.0]
+A new static method ***LinkerLine.positionAll() : void*** that updates all the lines'positions at once.
+
 ## Custom Plugs [1.1.0]
 It allows defining custom plugs via the static method LinkerLine.**definePlug( options : *object* )**.
 |Option Name|Type|Description|
