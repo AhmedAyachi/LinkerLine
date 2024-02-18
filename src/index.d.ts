@@ -79,6 +79,11 @@ export default class LinkerLine extends LinkerLineOptions {
         rotatable?:boolean,
     }):void;
 
+    /**
+     * positions all lines at once
+     */
+    static positionAll():void;
+
     static PointAnchor(element:HTMLElement,options:{
         x:number|string,
         y:number|string,
@@ -127,7 +132,7 @@ export default class LinkerLine extends LinkerLineOptions {
 interface LinkerLineProps extends LinkerLineOptions {
     /**
     * The element where to insert the line svg element
-    * @default document.body
+    * @default //the line's end element parentNode
     */
     parent:HTMLElement;
     hidden:boolean;

@@ -4,17 +4,18 @@ import definePlug,{setLinePlugStyle} from "./DefinePlug";
 
 export default class LinkerLine extends LeaderLine { 
     #element;
-    #onResize;
     constructor(props){
         props.hide=props.hidden;
         super(props);
-        this.#element=document.body.querySelector(":scope>.linker-line:last-of-type");
-        const {parent}=props;
+        const {id}=this;
+        statics.linemap[id]=this;
+        this.#element=LeaderLine.Se[id].svg;
+        const {parent=this.end.parentNode}=props;
         if(parent instanceof HTMLElement){
-            parent.style.position="relative";
+            if(getComputedStyle(parent).position==="static"){
+                parent.style.position="relative";
+            }
             parent.appendChild(this.element);
-            this.#onResize=()=>{requestAnimationFrame(()=>{this.position()})};
-            window.addEventListener("resize",this.#onResize);
             this.position();
             setLinePlugStyle(this);
         }
@@ -25,12 +26,12 @@ export default class LinkerLine extends LeaderLine {
         super.dash=value;
     }
 
-    position(){if(super.start.isConnected&&super.end.isConnected){
+    position(){
         super.position();
         const {element}=this,parent=element.parentNode;
-        const {style}=element,{scrollLeft,scrollTop}=parent,{left,top}=parent.getBoundingClientRect();
-        style.transform=`translate(${-1*(left-scrollLeft)}px,${-1*(top-scrollTop)}px)`;
-    }}
+        const {left,top}=parent.getBoundingClientRect();
+        element.style.transform=`translate(${parent.scrollLeft-left}px,${parent.scrollTop-top}px)`;
+    }
 
     show(effectName,options){
         toLeaderLineAnimationOptions(options);
@@ -44,8 +45,8 @@ export default class LinkerLine extends LeaderLine {
     }
 
     remove(){
+        delete statics.linemap[this.id];
         document.body.appendChild(this.element);
-        window.removeEventListener("resize",this.#onResize);
         super.remove();
     }
 
@@ -66,6 +67,14 @@ export default class LinkerLine extends LeaderLine {
 
     static definePlug(options){
         definePlug(options);
+    }
+
+    static positionAll(){
+        const {linemap}=statics;
+        for(const lineId in linemap){
+            const line=linemap[lineId];
+            line.start.isConnected&&line.end.isConnected&&line.position();
+        }
     }
 
     static PointAnchor(element,options){
@@ -101,6 +110,14 @@ export default class LinkerLine extends LeaderLine {
 
     static get names(){return Object.keys(LeaderLine.names)};
 }
+
+const statics={
+    linemap:{},
+}
+
+window.addEventListener("resize",()=>{
+    requestAnimationFrame(LinkerLine.positionAll);
+},false);
 
 const toLeaderLineDash=(dash)=>{
     if(dash&&(typeof(dash)==="object")){

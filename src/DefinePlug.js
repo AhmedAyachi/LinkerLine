@@ -24,7 +24,7 @@ export default function(options){
 }
 
 const statics={
-    shapeType:["rect","ellipse"],
+    shapes:["rect","ellipse"],
 }
 
 export const setLinePlugStyle=(linkerline)=>{
@@ -88,7 +88,7 @@ const defineSvgPlug=(defsEl,options)=>{
 
 const defineShapePlug=(defsEl,options)=>{
     const {shape}=options;
-    if(statics.shapeType.includes(shape)){
+    if(statics.shapes.includes(shape)){
         const {width=0,height=0}=options;
         options.width=width;
         options.height=height;
@@ -109,11 +109,12 @@ const defineShapePlug=(defsEl,options)=>{
             element.setAttribute("ry",height/2);
         } 
     }
-    else throw new Error(`shape should be one of: ${statics.shapeType.toString()}`);
+    else throw new Error(`shape should be one of: ${statics.shapes.toString()}`);
 }
 
 const registerPlug=(options)=>{
     const {name,width,height,margin,rotatable=true}=options;
+    const innerRadius=Math.max(width,height)/2;
     const plugProps={
         elmId:`linker-line-${name}`,
         bBox:{
@@ -125,9 +126,9 @@ const registerPlug=(options)=>{
         },
         widthR:width/4,
         heightR:height/4,
-        bCircle:Math.max(width,height)/2,
-        sideLen:Math.max(width,height)/2,
-        backLen:Math.max(width,height)/2,
+        bCircle:innerRadius,
+        sideLen:innerRadius,
+        backLen:innerRadius,
         overhead:(typeof(margin)==="number")&&margin,
         outlineBase:2,
         outlineMax:1.5,
