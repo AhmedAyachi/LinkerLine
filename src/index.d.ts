@@ -1,7 +1,7 @@
 
 
-export default class LinkerLine {
-    constructor(props:LinkerLineProps);
+export default class LinkerLine<StartType,EndType> {
+    constructor(props:LinkerLineProps<StartType,EndType>);
     /**
      * The instance id, different from the linkerline svg element id
      */
@@ -11,11 +11,11 @@ export default class LinkerLine {
     /**
      * Shows the linkerline element
      */
-    show(effectName:EffectName,animation?:LinkerLineAnimation):void;
+    show(effectName?:EffectName,animation?:LinkerLineAnimation):void;
     /**
      * Hides the linkerline element
      */
-    hide(effectName:EffectName,animation?:LinkerLineAnimation):void;
+    hide(effectName?:EffectName,animation?:LinkerLineAnimation):void;
     /**
      * Removes the linkerline from DOM
      */
@@ -24,7 +24,7 @@ export default class LinkerLine {
      * Same as setOptions method of the old implementation
      * @param props 
      */
-    setOptions(props:LinkerLineOptions):void;
+    setOptions(props:LinkerLineOptions<StartType,EndType>):void;
     /**
      * The linkerline svg element
      */
@@ -32,11 +32,11 @@ export default class LinkerLine {
     /**
      * Gets the line start element
     */
-    readonly start:HTMLElement;
+    readonly start:StartType;
     /**
      * Gets the line end element
     */
-    readonly end:HTMLElement;
+    readonly end:EndType;
     /**
      * Gets the line color
     */
@@ -80,12 +80,12 @@ export default class LinkerLine {
      */
     static positionAll():void;
 
-    static PointAnchor(element:HTMLElement,options:{
+    static PointAnchor(element:HTMLElement,options?:{
         x?:number|string,
         y?:number|string,
     }):PointAnchor;
 
-    static AreaAnchor<Shape extends keyof LinkerLineAnchorOptions>(element:HTMLElement,options:{
+    static AreaAnchor<Shape extends keyof LinkerLineAnchorOptions>(element:HTMLElement,options?:{
         x?:number|string,
         y?:number|string,
         /**
@@ -98,15 +98,20 @@ export default class LinkerLine {
         dash?:LinkerLineDash,
     }&LinkerLineAnchorOptions[Shape]):AreaAnchor;
 
-    static MouseHoverAnchor(element:HTMLElement,options:{
+    static MouseHoverAnchor(element:HTMLElement,options?:{
         showEffectName?:EffectName,
         animation?:LinkerLineAnimation,
-        style?:CSSStyleDeclaration,
-        hoverStyle?:CSSStyleDeclaration,
-        /**
-         * A function that is called after show/hide method, with an event argument
+        style?:Partial<CSSStyleDeclaration>,
+        hoverStyle?:Partial<CSSStyleDeclaration>,
+         /**
+         * A function that is called on line did show/hide, with a mouse event argument
          */
-        onSwitch(event:Event):void,
+        onToggle?(event:MouseEvent):void,
+        /**
+         * A function that is called on line did show/hide, with a mouse event argument
+         * @deprecated use onToggle instead
+         */
+        onSwitch?(event:MouseEvent):void,
     }):MouseHoverAnchor;
 
     static Label(text:string,options?:{
@@ -125,7 +130,7 @@ export default class LinkerLine {
 }
 
 
-interface LinkerLineProps extends LinkerLineOptions {
+export interface LinkerLineProps<StartType,EndType> extends LinkerLineOptions<StartType,EndType> {
     /**
     * The element where to insert the line svg element
     * @default //the line's end element parentNode
@@ -134,9 +139,9 @@ interface LinkerLineProps extends LinkerLineOptions {
     hidden?:boolean;
 }
 
-interface LinkerLineOptions {
-    start?:HTMLElement;
-    end?:HTMLElement;
+export interface LinkerLineOptions<StartType,EndType> {
+    start:StartType;
+    end:EndType;
     /**
      * @default "coral"
      */
@@ -234,25 +239,25 @@ interface LinkerLineOptions {
     endSocketGravity?:LinkerLineSocketGravity;
 }
 
-type EffectName="none"|"fade"|"draw";
-type LinkerLineAnimation={
+export type EffectName="none"|"fade"|"draw";
+export type LinkerLineAnimation={
     /**
      * in milliseconds
      */
     duration?:number,
     easing?:"ease"|"linear"|"ease-in"|"ease-out"|"ease-in-out"|number[],
 }
-type LinkerLinePath="straight"|"arc"|"fluid"|"magnet"|"grid";
-type LinkerLineSocket="auto"|"top"|"right"|"bottom"|"left";
-type LinkerLineSocketGravity="auto"|number|number[];
-type LinkerLinePlug="disc"|"square"|"arrow1"|"arrow2"|"arrow3"|"hand"|"crosshair"|"behind";
-type LinkerLineDash=boolean|{
+export type LinkerLinePath="straight"|"arc"|"fluid"|"magnet"|"grid";
+export type LinkerLineSocket="auto"|"top"|"right"|"bottom"|"left";
+export type LinkerLineSocketGravity="auto"|number|number[];
+export type LinkerLinePlug="disc"|"square"|"arrow1"|"arrow2"|"arrow3"|"hand"|"crosshair"|"behind"|String;
+export type LinkerLineDash=boolean|{
     length?:"auto"|number,
     gap?:"auto"|number,
     animation?:boolean|LinkerLineAnimation,
 };
 
-type LinkerLineDropShadow=boolean|{
+export type LinkerLineDropShadow=boolean|{
     /**
      * @default 2
      */
@@ -275,16 +280,16 @@ type LinkerLineDropShadow=boolean|{
     opacity?:number,
 }
 
-type LinkerLineEntity={
+export type LinkerLineEntity={
     readonly _id:number,
     readonly isRemoved:boolean,
 }
-interface PointAnchor extends LinkerLineEntity {}
-interface AreaAnchor extends LinkerLineEntity {}
-interface MouseHoverAnchor extends LinkerLineEntity {}
-interface LinkerLineLabel extends LinkerLineEntity {}
+export interface PointAnchor extends LinkerLineEntity {}
+export interface AreaAnchor extends LinkerLineEntity {}
+export interface MouseHoverAnchor extends LinkerLineEntity {}
+export interface LinkerLineLabel extends LinkerLineEntity {}
 
-type LinkerLineAnchorOptions={
+export type LinkerLineAnchorOptions={
     "rect":{
         /**
          * @default "110%"

@@ -87,6 +87,8 @@ export default class LinkerLine extends LeaderLine {
 
     static MouseHoverAnchor(element,options){
         if(options){
+            const {onToggle}=options;
+            if(onToggle){options.onSwitch=onToggle};
             options.animOptions=toLeaderLineAnimationOptions(options.animation);
         }
         return LeaderLine.mouseHoverAnchor(element,options);
