@@ -1,12 +1,15 @@
 import LeaderLine from "./LeaderLine";
+import LinkerLineChain from "./LinkerLineChain/LinkerLineChain";
 import definePlug,{setLinePlugStyle} from "./DefinePlug";
 
 
 export default class LinkerLine extends LeaderLine { 
     #element;
+    #hidden=false;
     constructor(props){
-        props.hide=props.hidden;
+        props.hide=Boolean(props.hidden);
         super(props);
+        this.#hidden=props.hide;
         const {id}=this;
         statics.linemap[id]=this;
         this.#element=LeaderLine.Se[id].svg;
@@ -34,12 +37,14 @@ export default class LinkerLine extends LeaderLine {
     }
 
     show(effectName,options){
+        this.#hidden=false;
         toLeaderLineAnimationOptions(options);
         super.show(effectName,options);
         this.position();
     }
 
     hide(effectName,options){
+        this.#hidden=true;
         toLeaderLineAnimationOptions(options);
         super.hide(effectName,options);
     }
@@ -58,6 +63,8 @@ export default class LinkerLine extends LeaderLine {
     get element(){return this.#element};
 
     get id(){return this._id};
+
+    get hidden(){return this.#hidden};
 
     get start(){return super.start};
     get end(){return super.end};
@@ -111,6 +118,8 @@ export default class LinkerLine extends LeaderLine {
     static get plugs(){return Object.keys(LeaderLine.plugs)};
 
     static get names(){return Object.keys(LeaderLine.names)};
+
+    static Chain=LinkerLineChain;
 }
 
 const statics={

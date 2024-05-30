@@ -1,3 +1,4 @@
+import LinkerLineChain from "./LinkerLineChain/LinkerLineChain";
 
 
 export default class LinkerLine<StartType,EndType> {
@@ -29,6 +30,7 @@ export default class LinkerLine<StartType,EndType> {
      * The linkerline svg element
      */
     readonly element:SVGElement;
+    readonly hidden:boolean;
     /**
      * Gets the line start element
     */
@@ -45,7 +47,6 @@ export default class LinkerLine<StartType,EndType> {
      * Gets the line size
     */
     readonly size:number;
-
 
     static definePlug(options:{
         name:string,
@@ -127,6 +128,8 @@ export default class LinkerLine<StartType,EndType> {
          */
         outlineColor?:string,
     }):LinkerLineLabel;
+
+    static Chain=LinkerLineChain;
 }
 
 
