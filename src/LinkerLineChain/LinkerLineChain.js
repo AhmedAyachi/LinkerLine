@@ -6,35 +6,43 @@ export default class LinkerLineChain {
     #nodes;
     #linked=false;
     #linkingDuration;
+    #focusIndex;
+    #linkTimeout=null;
 
     constructor(nodes,options){
+        const {linkingDuration=500,linked=true,lineOptions}=options||{};
         this.#nodes=nodes;
-        const {linkingDuration=500,lineOptions}=options||{};
+        this.#linked=Boolean(linked);
         this.#linkingDuration=Number(linkingDuration);
         let i=-1;
         const maxi=nodes.length-2;
+        this.#focusIndex=linked?maxi:0;
         while(i<maxi){
             i++;
             const start=nodes[i];
             const end=nodes[i+1];
-            const line=new LinkerLine({...lineOptions,start,end,hidden:true});
+            const line=new LinkerLine({...lineOptions,start,end,hidden:!this.#linked});
             end.inLine=line;
             start.outLine=line;
         }
-        this.link();
     }
 
     link(){
         const nodes=this.#nodes;
-        let i=-1;
+        const maxIndex=nodes.length-2;
         const drawPath=()=>{
-            i++;
-            if(i<(nodes.length-1)){
-                const line=nodes[i].outLine;
+            if(this.#focusIndex<=maxIndex){
+                const line=nodes[this.#focusIndex].outLine;
+                clearTimeout(this.#linkTimeout);
                 line.show("draw",{duration:this.#linkingDuration});
-                setTimeout(drawPath,this.#linkingDuration);
+                this.#linkTimeout=setTimeout(()=>{
+                    this.#focusIndex++;
+                    drawPath();
+                },this.#linkingDuration);
+                
             }
             else{
+                this.#focusIndex--;
                 this.#linked=true;
             }
         };
@@ -43,15 +51,18 @@ export default class LinkerLineChain {
 
     unlink(){
         const nodes=this.#nodes;
-        let i=nodes.length-1;
         const hideLink=()=>{
-            i--;
-            if(i>-1){
-                const line=nodes[i].outLine;
+            if(this.#focusIndex>-1){
+                const line=nodes[this.#focusIndex].outLine;
+                clearTimeout(this.#linkTimeout);
                 line.hide("draw",{duration:this.#linkingDuration});
-                setTimeout(hideLink,this.#linkingDuration);
+                this.#linkTimeout=setTimeout(()=>{
+                    this.#focusIndex--;
+                    hideLink();
+                },this.#linkingDuration);
             }
             else{
+                this.#focusIndex++;
                 this.#linked=false;
             }
         }
