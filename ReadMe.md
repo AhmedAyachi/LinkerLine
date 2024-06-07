@@ -52,7 +52,7 @@ And then use it in your code as follows :
 ![ChainIllustration.gif](https://raw.githubusercontent.com/AhmedAyachi/RepoIllustrations/main/LinkerLine/ChainIllustration.gif)
 
 ```
-new LinKerLine.Chain(nodes,options):LinerLineChain;
+new LinKerLine.Chain(nodes,options):LinkerLineChain;
 ```
 |Param Name|Type|Description|
 |----------|----|-----------|
@@ -73,7 +73,7 @@ new LinKerLine.Chain(nodes,options):LinerLineChain;
 |line|LinkerLine|The connection line|
 |startNode|HTMLElement|same as line.start|
 |endNode|HTMLElement|same as line.end|
-|nodesLinked|boolean|Indicates either the nodes are linked or unlinked|
+|nodesLinked|boolean|Indicates whether the nodes are linked or unlinked|
 
 ### LinkerLineChain :
 |Name|Type|Description|
@@ -83,7 +83,7 @@ new LinKerLine.Chain(nodes,options):LinerLineChain;
 |link|() : void|links the chain nodes|
 |unlink|() : void|unlinks the chain nodes|
 
-Additional properties are added to nodes:
+**Additional properties are added to nodes:**
 |Property Name|Type|Description|
 |-------------|----|-----------|
 |outLine|LinkerLine \| undefined|The linkerline instance exiting the node|
