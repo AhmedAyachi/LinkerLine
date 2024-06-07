@@ -11,7 +11,7 @@ export default class LinkerLineChain<Type> {
     unlink():void;
 }
 
-type LinkerLineChainOptions<Type>={
+export type LinkerLineChainOptions<Type>={
     /**
      * Line draw animation duration in milliseconds
      * @default 500

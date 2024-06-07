@@ -1,4 +1,4 @@
-import LinkerLineChain from "./LinkerLineChain/LinkerLineChain";
+import LinkerLineChain,{LinkerLineChainOptions} from "./LinkerLineChain/LinkerLineChain";
 
 
 export default class LinkerLine<StartType,EndType> {
@@ -129,7 +129,10 @@ export default class LinkerLine<StartType,EndType> {
         outlineColor?:string,
     }):LinkerLineLabel;
 
-    static Chain=LinkerLineChain;
+    static Chain:new<Type>(
+        nodes:Type[],
+        options?:LinkerLineChainOptions<Type>,
+    )=>LinkerLineChain<Type>;
 }
 
 
