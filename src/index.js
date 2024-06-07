@@ -8,7 +8,7 @@ export default class LinkerLine extends LeaderLine {
     #hidden=false;
     constructor(props){
         props.hide=Boolean(props.hidden);
-        super(props);
+        super(props)
         this.#hidden=props.hide;
         const {id}=this;
         statics.linemap[id]=this;
@@ -58,6 +58,7 @@ export default class LinkerLine extends LeaderLine {
     setOptions(options){
         toLeaderLineDash(options.dash);
         super.setOptions(options);
+        this.position();
     }
 
     get element(){return this.#element};

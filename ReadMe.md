@@ -27,7 +27,7 @@ Changes :
  4. dash "len" property is renamed to "length".
  
 ## Illustration
-![Illustration](https://github.com/AhmedAyachi/RepoIllustrations/blob/main/LeaderLine/Illustration.gif)
+![Illustration](https://raw.githubusercontent.com/AhmedAyachi/RepoIllustrations/main/LinkerLine/Illustration.gif)
 
 Check [source code](https://github.com/AhmedAyachi/VritraExamples).
 
@@ -47,6 +47,65 @@ And then use it in your code as follows :
 	    end:HTMLElement,
     });
 	//line.element => returns the line svg element
+
+## LinkerLine Chain [1.3.0]
+![ChainIllustration.gif](https://raw.githubusercontent.com/AhmedAyachi/RepoIllustrations/main/LinkerLine/ChainIllustration.gif)
+
+```
+new LinKerLine.Chain(nodes,options):LinerLineChain;
+```
+|Param Name|Type|Description|
+|----------|----|-----------|
+|nodes|HTMLElement[]|The chain nodes|
+|options|object|The chain options|
+
+### Chain Options :
+|Option Name|Type|Description|
+|-----------|----|-----------|
+|linkingDuration|number|The line draw animation duration, default to 500|
+|linked|boolean|specifies if the chain is initially linked or not, default to false|
+|lineOptions|LinkerLineOptions|The line options|
+|onLinkChange|(context:object):void|Called on each node-to-node connection change|
+
+### onLinkChange Context :
+|Property Name|Type|Description|
+|-------------|----|-----------|
+|line|LinkerLine|The connection line|
+|startNode|HTMLElement|same as line.start|
+|endNode|HTMLElement|same as line.end|
+|nodesLinked|boolean|Indicates either the nodes are linked or unlinked|
+
+### LinkerLineChain :
+|Name|Type|Description|
+|-------|-----|-------|
+|nodes|HTMLElement[]|gets the chain target nodes|
+|linked|boolean|indicates if the chain nodes are all linked or not
+|link|() : void|links the chain nodes|
+|unlink|() : void|unlinks the chain nodes|
+
+Additional properties are added to nodes:
+|Property Name|Type|Description|
+|-------------|----|-----------|
+|outLine|LinkerLine \| undefined|The linkerline instance exiting the node|
+|inLine|LinkerLine \| undefined|The linkerline instance entering the node|
+
+### Illustration code :
+```
+const chain=new LinkerLine.Chain(nodes,{
+    onLinkChange:({line,startNode,endNode,nodesLinked})=>{
+        const color=nodesLinked?line.color:null;
+        startNode.style.backgroundColor=color;
+        endNode.style.backgroundColor=color;
+        line.setOptions({color});
+    },
+});
+linkbtn.onclick=()=>{
+    chain.link();
+};
+unlinkbtn.onclick=()=>{
+    chain.unlink();
+}
+```
 
 ## positionAll [1.2.0]
 A new static method ***LinkerLine.positionAll() : void*** that updates all the lines'positions at once.
