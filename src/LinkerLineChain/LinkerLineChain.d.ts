@@ -30,6 +30,7 @@ export type LinkerLineChainOptions<Type>={
         endNode:LinkerLineChainNode<Type>,
         line:LinkerLine<Type,Type>,
         nodesLinked:boolean,
+        hopIndex:number,
     }):void;
 }
 

@@ -33,7 +33,9 @@ export default class LinkerLine extends LeaderLine {
         super.position();
         const {element}=this,parent=element.parentNode;
         const {left,top}=parent.getBoundingClientRect();
-        element.style.transform=`translate(${parent.scrollLeft-left}px,${parent.scrollTop-top}px)`;
+        const translateX=parent.scrollLeft-left-window.scrollX;
+        const translateY=parent.scrollTop-top-window.scrollY;
+        element.style.transform=`translate(${translateX}px,${translateY}px)`;
     }
 
     show(effectName,options){

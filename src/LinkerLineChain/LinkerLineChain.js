@@ -45,9 +45,9 @@ export default class LinkerLineChain {
                         startNode:line.start,
                         endNode:line.end,line,
                         nodesLinked:true,
+                        hopIndex:this.#focusIndex-(this.#linked?0:1),
                     });
                 },this.#linkingDuration);
-                
             }
             else{
                 this.#focusIndex--;
@@ -68,11 +68,13 @@ export default class LinkerLineChain {
                 this.#linkTimeout=setTimeout(()=>{
                     const onLinkChange=this.#onLinkChange;
                     this.#focusIndex--;
+                    const firstReached=this.#focusIndex<0;
                     hideLine();
                     onLinkChange&&onLinkChange({
                         startNode:line.start,
                         endNode:line.end,line,
                         nodesLinked:false,
+                        hopIndex:this.#focusIndex+(firstReached?0:1),
                     });
                 },this.#linkingDuration);
             }
