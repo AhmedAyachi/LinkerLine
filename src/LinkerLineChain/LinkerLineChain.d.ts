@@ -9,6 +9,8 @@ export default class LinkerLineChain<Type> {
     readonly linked:boolean;
     link():void;
     unlink():void;
+
+    static getLineChain<Type>(line:LinkerLine<Type,Type>|any):LinkerLineChain<Type>|null;
 }
 
 export type LinkerLineChainOptions<Type>={

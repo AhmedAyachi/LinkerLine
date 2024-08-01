@@ -16,9 +16,11 @@ This library tackles all the issues mentioned above and provides more  options a
 |--|--|
 |parent|where to insert the line element, default to document.body in **<1.2.0** and to the line's end element parentNode in **>=1.2.0** |
 
-|New Properties|Description|
-|--|--|
-|element|The leaderline svg element|
+|New Properties|Type|Description|
+|--------------|----|-----------|
+|element|SVG Element|The line svg element|
+|removed|boolean|Indicates whether the line was removed (line.remove was called) or not [>=1.5.0]
+|standalone|boolean|Indicates whether the line is directly instantiated or not (ex: belongs to a LinkerLineChain instance) [>=1.5.0]|
 
 Changes :
  1. pointAnchor, areaAnchor, mouseHoverAnchor are renamed to PointAnchor, AreaAnchor, MouseHoverAnchor.
@@ -48,6 +50,13 @@ And then use it in your code as follows :
     });
 	//line.element => returns the line svg element
 
+## Version 1.5.0 add-ons
+|Static Method Name|Return Value|Description|
+|-----------|------------|-----------|
+|removeAll()|void|removes all standalone lines at once|
+|getLineChain(line:LinkerLine)|LinkerLineChain \| null|returns the LinkerLineChain instance the line belongs to if any|
+
+
 ## LinkerLine Chain [1.3.0]
 ![ChainIllustration.gif](https://raw.githubusercontent.com/AhmedAyachi/RepoIllustrations/main/LinkerLine/ChainIllustration.gif)
 
@@ -65,15 +74,16 @@ new LinKerLine.Chain(nodes,options):LinkerLineChain;
 |linkingDuration|number|The line draw animation duration, default to 500|
 |linked|boolean|specifies if the chain is initially linked or not, default to false|
 |lineOptions|LinkerLineOptions|The line options|
-|onLinkChange|(context:object):void|Called on each node-to-node connection change|
+|onLinkChange|(context : object) : void|Called on each node-to-node connection change|
 
 ### onLinkChange Context :
 |Property Name|Type|Description|
 |-------------|----|-----------|
 |line|LinkerLine|The connection line|
-|startNode|HTMLElement|same as line.start|
-|endNode|HTMLElement|same as line.end|
+|startNode|HTMLElement|Same as line.start|
+|endNode|HTMLElement|Same as line.end|
 |nodesLinked|boolean|Indicates whether the nodes are linked or unlinked|
+|hopIndex|number|The hop index [>=1.4.0]|
 
 ### LinkerLineChain :
 |Name|Type|Description|

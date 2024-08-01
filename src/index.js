@@ -6,13 +6,15 @@ import definePlug,{setLinePlugStyle} from "./DefinePlug";
 export default class LinkerLine extends LeaderLine { 
     #element;
     #hidden=false;
+
     constructor(props){
         props.hide=Boolean(props.hidden);
-        super(props)
+        super(props);
         this.#hidden=props.hide;
         const {id}=this;
         statics.linemap[id]=this;
         this.#element=LeaderLine.Se[id].svg;
+        this.#element.style.willChange="left,top";
         const {parent=this.end.parentNode}=props;
         if(parent instanceof HTMLElement){
             if(getComputedStyle(parent).position==="static"){
@@ -30,12 +32,14 @@ export default class LinkerLine extends LeaderLine {
     }
 
     position(){
-        super.position();
-        const {element}=this,parent=element.parentNode;
-        const {left,top}=parent.getBoundingClientRect();
-        const translateX=parent.scrollLeft-left-window.scrollX;
-        const translateY=parent.scrollTop-top-window.scrollY;
-        element.style.transform=`translate(${translateX}px,${translateY}px)`;
+        if(!(this.#hidden||this.removed)){
+            super.position();
+            const {element}=this,parent=element.parentNode;
+            const {left,top}=parent.getBoundingClientRect();
+            const translateX=parent.scrollLeft-left-window.scrollX;
+            const translateY=parent.scrollTop-top-window.scrollY;
+            element.style.transform=`translate(${translateX}px,${translateY}px)`;       
+        }
     }
 
     show(effectName,options){
@@ -52,9 +56,11 @@ export default class LinkerLine extends LeaderLine {
     }
 
     remove(){
-        delete statics.linemap[this.id];
-        document.body.appendChild(this.element);
-        super.remove();
+        if(!this.removed){
+            delete statics.linemap[this.id];
+            document.body.appendChild(this.element);
+            super.remove();
+        }
     }
 
     setOptions(options){
@@ -63,17 +69,25 @@ export default class LinkerLine extends LeaderLine {
         this.position();
     }
 
+    get standalone(){
+        return !LinkerLineChain.getLineChain(this);
+    }
+
     get element(){return this.#element};
 
     get id(){return this._id};
 
     get hidden(){return this.#hidden};
+    get removed(){
+        return !statics.linemap[this.id];
+    }
 
     get start(){return super.start};
     get end(){return super.end};
 
     get color(){return super.color};
     get size(){return super.size};
+
 
     static definePlug(options){
         definePlug(options);
@@ -84,6 +98,14 @@ export default class LinkerLine extends LeaderLine {
         for(const lineId in linemap){
             const line=linemap[lineId];
             line.start.isConnected&&line.end.isConnected&&line.position();
+        }
+    }
+
+    static removeAll(){
+        const {linemap}=statics;
+        for(const lineId in linemap){
+            const line=linemap[lineId];
+            if(line.standalone) line.remove();
         }
     }
 
@@ -123,6 +145,7 @@ export default class LinkerLine extends LeaderLine {
     static get names(){return Object.keys(LeaderLine.names)};
 
     static Chain=LinkerLineChain;
+    static getLineChain=LinkerLineChain.getLineChain;
 }
 
 const statics={

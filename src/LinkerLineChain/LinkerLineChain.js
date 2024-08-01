@@ -27,37 +27,40 @@ export default class LinkerLineChain {
             Object.defineProperty(start,"outLine",{get:()=>line});
             Object.defineProperty(end,"inLine",{get:()=>line});
         }
+        statics.chains.push(this);
     }
 
     link(){
-        const nodes=this.#nodes;
-        const maxIndex=nodes.length-2;
-        const showLine=()=>{
-            if(this.#focusIndex<=maxIndex){
-                const line=nodes[this.#focusIndex].outLine;
-                clearTimeout(this.#linkTimeout);
-                line.show("draw",{duration:this.#linkingDuration});
-                this.#linkTimeout=setTimeout(()=>{
-                    const onLinkChange=this.#onLinkChange;
-                    this.#focusIndex++;
-                    showLine();
-                    onLinkChange&&onLinkChange({
-                        startNode:line.start,
-                        endNode:line.end,line,
-                        nodesLinked:true,
-                        hopIndex:this.#focusIndex-(this.#linked?0:1),
-                    });
-                },this.#linkingDuration);
-            }
-            else{
-                this.#focusIndex--;
-                this.#linked=true;
-            }
-        };
-        showLine();
+        const nodes=this.#nodes,nodeCount=nodes.length;
+        const maxIndex=nodeCount-2;
+        if(this.#focusIndex<maxIndex){
+            const showLine=()=>{
+                if(this.#focusIndex<=maxIndex){
+                    const line=nodes[this.#focusIndex].outLine;
+                    clearTimeout(this.#linkTimeout);
+                    line.show("draw",{duration:this.#linkingDuration});
+                    this.#linkTimeout=setTimeout(()=>{
+                        const onLinkChange=this.#onLinkChange;
+                        this.#focusIndex++;
+                        showLine();
+                        onLinkChange&&onLinkChange({
+                            startNode:line.start,
+                            endNode:line.end,line,
+                            nodesLinked:true,
+                            hopIndex:this.#focusIndex-(this.#linked?0:1),
+                        });
+                    },this.#linkingDuration);
+                }
+                else{
+                    this.#focusIndex--;
+                    this.#linked=true;
+                }
+            };
+            showLine();
+        }
     }
 
-    unlink(){
+    unlink(){if(this.#focusIndex>0){
         const nodes=this.#nodes;
         const hideLine=()=>{
             if(this.#focusIndex>-1){
@@ -83,8 +86,31 @@ export default class LinkerLineChain {
             }
         }
         hideLine();
-    }
+    }}
 
     get nodes(){return [...this.#nodes]};
     get linked(){return this.#linked};
+
+    static getLineChain(line){
+        if(line instanceof LinkerLine){
+            const {chains}=statics,chainCount=chains.length;
+            let i=0;
+            while(i<chainCount){
+                const chain=chains[i];
+                let j=1;
+                const {nodes}=chain,nodeCount=nodes.length;
+                while(j<nodeCount){
+                    if(line===nodes[j].inLine) return chain;
+                    j++;
+                }
+                i++;
+            }
+            return null;
+        }
+        else return null;
+    }
+}
+
+const statics={
+    chains:[],
 }

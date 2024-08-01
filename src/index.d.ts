@@ -47,6 +47,15 @@ export default class LinkerLine<StartType,EndType> {
      * Gets the line size
     */
     readonly size:number;
+    /**
+     * Returns true if the line was instantiated directly using the LinkerLine class
+     * @notice Returns false if the line is part of a chain linkers
+     */
+    readonly standalone:boolean;
+    /**
+     * Returns true if the line was removed using the remove method
+     */
+    readonly removed:boolean;
 
     static definePlug(options:{
         name:string,
@@ -80,6 +89,11 @@ export default class LinkerLine<StartType,EndType> {
      * positions all lines at once
      */
     static positionAll():void;
+
+    /**
+     * removes all standalone lines at once
+     */
+    static removeAll():void;
 
     static PointAnchor(element:HTMLElement,options?:{
         x?:number|string,
@@ -133,6 +147,11 @@ export default class LinkerLine<StartType,EndType> {
         nodes:Type[],
         options?:LinkerLineChainOptions<Type>,
     )=>LinkerLineChain<Type>;
+
+    /**
+     * Returns the chain that the line belongs to.
+     */
+    static getLineChain<Type>(line:LinkerLine<Type,Type>|undefined|null):LinkerLineChain<Type>|null;
 }
 
 
