@@ -30,37 +30,35 @@ export default class LinkerLineChain {
         statics.chains.push(this);
     }
 
-    link(){
+    link(){if(!this.linked){
         const nodes=this.#nodes,nodeCount=nodes.length;
         const maxIndex=nodeCount-2;
-        if(this.#focusIndex<maxIndex){
-            const showLine=()=>{
-                if(this.#focusIndex<=maxIndex){
-                    const line=nodes[this.#focusIndex].outLine;
-                    clearTimeout(this.#linkTimeout);
-                    line.show("draw",{duration:this.#linkingDuration});
-                    this.#linkTimeout=setTimeout(()=>{
-                        const onLinkChange=this.#onLinkChange;
-                        this.#focusIndex++;
-                        showLine();
-                        onLinkChange&&onLinkChange({
-                            startNode:line.start,
-                            endNode:line.end,line,
-                            nodesLinked:true,
-                            hopIndex:this.#focusIndex-(this.#linked?0:1),
-                        });
-                    },this.#linkingDuration);
-                }
-                else{
-                    this.#focusIndex--;
-                    this.#linked=true;
-                }
-            };
-            showLine();
-        }
-    }
+        const showLine=()=>{
+            if(this.#focusIndex<=maxIndex){
+                const line=nodes[this.#focusIndex].outLine;
+                clearTimeout(this.#linkTimeout);
+                line.show("draw",{duration:this.#linkingDuration});
+                this.#linkTimeout=setTimeout(()=>{
+                    const onLinkChange=this.#onLinkChange;
+                    this.#focusIndex++;
+                    showLine();
+                    onLinkChange&&onLinkChange({
+                        startNode:line.start,
+                        endNode:line.end,line,
+                        nodesLinked:true,
+                        hopIndex:this.#focusIndex-(this.#linked?0:1),
+                    });
+                },this.#linkingDuration);
+            }
+            else{
+                this.#focusIndex--;
+                this.#linked=true;
+            }
+        };
+        showLine();
+    }}
 
-    unlink(){if(this.#focusIndex>0){
+    unlink(){if((this.#focusIndex>0)||this.linked){
         const nodes=this.#nodes;
         const hideLine=()=>{
             if(this.#focusIndex>-1){
