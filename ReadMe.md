@@ -85,11 +85,12 @@ new LinKerLine.Chain(nodes,options):LinkerLineChain;
 |nodesLinked|boolean|Indicates whether the nodes are linked or unlinked|
 |hopIndex|number|The hop index [>=1.4.0]|
 
-### LinkerLineChain :
+### LinkerLineChain:
 |Name|Type|Description|
 |-------|-----|-------|
 |nodes|HTMLElement[]|gets the chain target nodes|
-|linked|boolean|indicates if the chain nodes are all linked or not
+|linked|boolean|true if all nodes are fully linked, false otherwise|
+|partiallyLinked|boolean|true if at least one line is visible, false otherwise|
 |link|() : void|links the chain nodes|
 |unlink|() : void|unlinks the chain nodes|
 
