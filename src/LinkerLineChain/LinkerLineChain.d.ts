@@ -6,7 +6,14 @@ export default class LinkerLineChain<Type> {
     constructor(nodes:Type[],options?:LinkerLineChainOptions<Type>);
 
     readonly nodes:LinkerLineChainNode<Type>[];
+    /**
+     * true if all nodes are fully linked, false otherwise
+     */
     readonly linked:boolean;
+    /**
+     * true if at least one line is visible, false otherwise
+     */
+    readonly partiallyLinked:boolean;
     link():void;
     unlink():void;
 

@@ -5,17 +5,19 @@ export default class LinkerLineChain {
     
     #nodes;
     #linked=false;
+    #partiallyLinked=false;
     #linkingDuration;
     #focusIndex;
     #linkTimeout=null;
     #onLinkChange=null;
 
     constructor(nodes,options){
-        const {linkingDuration=500,linked,lineOptions,onLinkChange}=options||{};
+        const {linkingDuration=500,lineOptions,onLinkChange}=options||{};
         this.#nodes=nodes;
-        this.#linked=Boolean(linked);
         this.#onLinkChange=(typeof(onLinkChange)==="function")&&onLinkChange;
         this.#linkingDuration=Number(linkingDuration);
+        const linked=this.#linked=Boolean(options.linked);
+        this.#partiallyLinked=linked;
         let i=-1;
         const maxi=nodes.length-2;
         this.#focusIndex=linked?maxi:0;
@@ -38,6 +40,7 @@ export default class LinkerLineChain {
                 const line=nodes[this.#focusIndex].outLine;
                 clearTimeout(this.#linkTimeout);
                 line.show("draw",{duration:this.#linkingDuration});
+                this.#partiallyLinked=true;
                 this.#linkTimeout=setTimeout(()=>{
                     const onLinkChange=this.#onLinkChange;
                     this.#focusIndex++;
@@ -58,7 +61,7 @@ export default class LinkerLineChain {
         showLine();
     }}
 
-    unlink(){if((this.#focusIndex>0)||this.linked){
+    unlink(){if(this.partiallyLinked){
         const nodes=this.#nodes;
         const hideLine=()=>{
             if(this.#focusIndex>-1){
@@ -81,6 +84,7 @@ export default class LinkerLineChain {
             }
             else{
                 this.#focusIndex++;
+                this.#partiallyLinked=false;
             }
         }
         hideLine();
@@ -88,6 +92,7 @@ export default class LinkerLineChain {
 
     get nodes(){return [...this.#nodes]};
     get linked(){return this.#linked};
+    get partiallyLinked(){return this.#partiallyLinked};
 
     static getLineChain(line){
         if(line instanceof LinkerLine){
