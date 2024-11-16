@@ -1,8 +1,8 @@
 import LinkerLineChain,{LinkerLineChainOptions} from "./LinkerLineChain/LinkerLineChain";
 
 
-export default class LinkerLine<StartType,EndType> {
-    constructor(props:LinkerLineProps<StartType,EndType>);
+export default class LinkerLine<StartType,EndType,Path extends LinkerLinePath> {
+    constructor(props:LinkerLineProps<StartType,EndType,Path>);
     /**
      * The instance id, different from the linkerline svg element id
      */
@@ -151,20 +151,40 @@ export default class LinkerLine<StartType,EndType> {
     /**
      * Returns the chain that the line belongs to.
      */
-    static getLineChain<Type>(line:LinkerLine<Type,Type>|undefined|null):LinkerLineChain<Type>|null;
+    static getLineChain<Type,Path extends LinkerLinePath>(line:LinkerLine<Type,Type,Path>|undefined|null):LinkerLineChain<Type>|null;
 }
 
 
-export interface LinkerLineProps<StartType,EndType> extends LinkerLineOptions<StartType,EndType> {
+export type LinkerLineProps<StartType,EndType,Path extends LinkerLinePath>=(
+    LinkerLineOptions<StartType,EndType>&
+    PathPropsMap[Path]&{
     /**
     * The element where to insert the line svg element
     * @default //the line's end element parentNode
     */
     parent?:HTMLElement;
     hidden?:boolean;
+    /**
+     * @default "fluid"
+     */
+    path?:Path;
+});
+
+export type PathPropsMap={
+    "arc":{},
+    "grid":{
+        /**
+         * @default 40
+         */
+        minGridLength?:number,
+    },
+    "fluid":{},
+    "magnet":{},
+    "straight":{},
 }
 
-export interface LinkerLineOptions<StartType,EndType> {
+export type LinkerLineOptions<StartType,EndType>={
+    path?:LinkerLinePath;
     start:StartType;
     end:EndType;
     /**
@@ -176,10 +196,6 @@ export interface LinkerLineOptions<StartType,EndType> {
         endColor?:string,
     };
     dropShadow?:LinkerLineDropShadow;
-    /**
-     * @default "fluid"
-     */
-    path?:LinkerLinePath;
     size?:number;
     outline?:boolean;
     /**
@@ -272,7 +288,7 @@ export type LinkerLineAnimation={
     duration?:number,
     easing?:"ease"|"linear"|"ease-in"|"ease-out"|"ease-in-out"|number[],
 }
-export type LinkerLinePath="straight"|"arc"|"fluid"|"magnet"|"grid";
+export type LinkerLinePath=keyof PathPropsMap;
 export type LinkerLineSocket="auto"|"top"|"right"|"bottom"|"left";
 export type LinkerLineSocketGravity="auto"|number|number[];
 export type LinkerLinePlug="disc"|"square"|"arrow1"|"arrow2"|"arrow3"|"hand"|"crosshair"|"behind"|String;

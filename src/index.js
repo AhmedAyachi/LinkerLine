@@ -8,6 +8,7 @@ export default class LinkerLine extends LeaderLine {
     #hidden=false;
 
     constructor(props){
+        props.ee=Math.max(Number(props.minGridLength),1)||40;
         props.hide=Boolean(props.hidden);
         super(props);
         this.#hidden=props.hide;

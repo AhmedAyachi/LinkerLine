@@ -15,6 +15,7 @@ This library tackles all the issues mentioned above and provides more  options a
 |New Options|Description|
 |--|--|
 |parent|where to insert the line element, default to document.body in **<1.2.0** and to the line's end element parentNode in **>=1.2.0** |
+|minGridLength|The minimun line length. Only applied to grid-pathed lines|
 
 |New Properties|Type|Description|
 |--------------|----|-----------|
@@ -107,7 +108,6 @@ const chain=new LinkerLine.Chain(nodes,{
         const color=nodesLinked?line.color:null;
         startNode.style.backgroundColor=color;
         endNode.style.backgroundColor=color;
-        line.setOptions({color});
     },
 });
 linkbtn.onclick=()=>{
