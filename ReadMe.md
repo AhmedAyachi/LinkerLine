@@ -90,10 +90,13 @@ new LinKerLine.Chain(nodes,options):LinkerLineChain;
 |Name|Type|Description|
 |-------|-----|-------|
 |nodes|HTMLElement[]|gets the chain target nodes|
+|lines|LinkerLine[]|gets the chain lines|
 |linked|boolean|true if all nodes are fully linked, false otherwise|
 |partiallyLinked|boolean|true if at least one line is visible, false otherwise|
 |link|() : void|links the chain nodes|
 |unlink|() : void|unlinks the chain nodes|
+|pushNode|(node:HTMLElement) : void|appends a new node to the end of the chain|
+|unshiftNode|(node:HTMLElement) : void|adds a new node at the start of the chain
 
 **Additional properties are added to nodes:**
 |Property Name|Type|Description|

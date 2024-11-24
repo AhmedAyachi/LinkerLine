@@ -17,7 +17,15 @@ export default class LinkerLineChain<Type,Path extends LinkerLinePath> {
     readonly partiallyLinked:boolean;
     link():void;
     unlink():void;
+    /**
+     * appends a new node to the end of the chain
+     * @param node 
+     */
     pushNode(node:HTMLElement):void;
+    /**
+     * adds a new node at the start of the chain
+     * @param node 
+     */
     unshiftNode(node:HTMLElement):void;
 
     static getLineChain<Type,Path extends LinkerLinePath>(line:LinkerLine<Type,Type,Path>|any):LinkerLineChain<Type,Path>|null;
