@@ -1,11 +1,12 @@
-import LinkerLine,{LinkerLineOptions} from "../index";
+import LinkerLine,{LinkerLineOptions,LinkerLinePath, PathPropsMap} from "../index";
 
 
-export default class LinkerLineChain<Type> {
+export default class LinkerLineChain<Type,Path extends LinkerLinePath> {
 
-    constructor(nodes:Type[],options?:LinkerLineChainOptions<Type>);
+    constructor(nodes:Type[],options?:LinkerLineChainOptions<Type,Path>);
 
     readonly nodes:LinkerLineChainNode<Type>[];
+    readonly lines:LinkerLine<Type,Type,Path>[];
     /**
      * true if all nodes are fully linked, false otherwise
      */
@@ -17,10 +18,10 @@ export default class LinkerLineChain<Type> {
     link():void;
     unlink():void;
 
-    static getLineChain<Type>(line:LinkerLine<Type,Type>|any):LinkerLineChain<Type>|null;
+    static getLineChain<Type,Path extends LinkerLinePath>(line:LinkerLine<Type,Type,Path>|any):LinkerLineChain<Type,Path>|null;
 }
 
-export type LinkerLineChainOptions<Type>={
+export type LinkerLineChainOptions<Type,Path extends LinkerLinePath>={
     /**
      * Line draw animation duration in milliseconds
      * @default 500
@@ -30,14 +31,14 @@ export type LinkerLineChainOptions<Type>={
      * @default false
      */
     linked?:boolean,
-    lineOptions?:Omit<LinkerLineOptions<Type,Type>,"start"|"end"|"hidden">;
+    lineOptions?:Omit<LinkerLineOptions<Type,Type,Path>,"start"|"end"|"hidden">&PathPropsMap[Path];
     /**
      * Called on each node-to-node connection change.
      */
     onLinkChange?(context:{
         startNode:LinkerLineChainNode<Type>,
         endNode:LinkerLineChainNode<Type>,
-        line:LinkerLine<Type,Type>,
+        line:LinkerLine<Type,Type,Path>,
         nodesLinked:boolean,
         hopIndex:number,
     }):void;

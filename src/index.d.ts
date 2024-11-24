@@ -1,7 +1,7 @@
 import LinkerLineChain,{LinkerLineChainOptions} from "./LinkerLineChain/LinkerLineChain";
 
 
-export default class LinkerLine<StartType,EndType,Path extends LinkerLinePath> {
+export default class LinkerLine<StartType,EndType,Path extends LinkerLinePath="fluid"> {
     constructor(props:LinkerLineProps<StartType,EndType,Path>);
     /**
      * The instance id, different from the linkerline svg element id
@@ -143,20 +143,20 @@ export default class LinkerLine<StartType,EndType,Path extends LinkerLinePath> {
         outlineColor?:string,
     }):LinkerLineLabel;
 
-    static Chain:new<Type>(
+    static Chain:new<Type,Path extends LinkerLinePath="fluid">(
         nodes:Type[],
-        options?:LinkerLineChainOptions<Type>,
-    )=>LinkerLineChain<Type>;
+        options?:LinkerLineChainOptions<Type,Path>,
+    )=>LinkerLineChain<Type,Path>;
 
     /**
      * Returns the chain that the line belongs to.
      */
-    static getLineChain<Type,Path extends LinkerLinePath>(line:LinkerLine<Type,Type,Path>|undefined|null):LinkerLineChain<Type>|null;
+    static getLineChain<Type,Path extends LinkerLinePath>(line:LinkerLine<Type,Type,Path>|undefined|null):LinkerLineChain<Type,Path>|null;
 }
 
 
 export type LinkerLineProps<StartType,EndType,Path extends LinkerLinePath>=(
-    LinkerLineOptions<StartType,EndType>&
+    LinkerLineOptions<StartType,EndType,Path>&
     PathPropsMap[Path]&{
     /**
     * The element where to insert the line svg element
@@ -183,8 +183,11 @@ export type PathPropsMap={
     "straight":{},
 }
 
-export type LinkerLineOptions<StartType,EndType>={
-    path?:LinkerLinePath;
+export type LinkerLineOptions<StartType,EndType,Path extends LinkerLinePath="fluid">={
+    /**
+     * @default "fluid"
+     */
+    path?:Path;
     start:StartType;
     end:EndType;
     /**

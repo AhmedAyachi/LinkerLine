@@ -15,7 +15,7 @@ This library tackles all the issues mentioned above and provides more  options a
 |New Options|Description|
 |--|--|
 |parent|where to insert the line element, default to document.body in **<1.2.0** and to the line's end element parentNode in **>=1.2.0** |
-|minGridLength|The minimun line length. Only applied to grid-pathed lines|
+|minGridLength|The minimun line length (default to ***40***). Only applied to grid-pathed lines **[>=1.6.0]**|
 
 |New Properties|Type|Description|
 |--------------|----|-----------|

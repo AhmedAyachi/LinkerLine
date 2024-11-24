@@ -23,9 +23,11 @@ export default class LinkerLineChain {
         this.#focusIndex=linked?maxi:0;
         while(i<maxi){
             i++;
-            const start=nodes[i];
-            const end=nodes[i+1];
-            const line=new LinkerLine({...lineOptions,start,end,hidden:!this.#linked});
+            const start=nodes[i],end=nodes[i+1];
+            const line=new LinkerLine({
+                ...lineOptions,start,end,
+                hidden:!this.#linked,
+            });
             Object.defineProperty(start,"outLine",{get:()=>line});
             Object.defineProperty(end,"inLine",{get:()=>line});
         }
@@ -93,6 +95,15 @@ export default class LinkerLineChain {
     get nodes(){return [...this.#nodes]};
     get linked(){return this.#linked};
     get partiallyLinked(){return this.#partiallyLinked};
+
+    get lines(){
+        const lines=[];
+        const nodes=this.#nodes,{length}=nodes;
+        for(let i=1;i<length;i++){
+            lines.push(nodes[i].inLine);
+        }
+        return lines;
+    }
 
     static getLineChain(line){
         if(line instanceof LinkerLine){
