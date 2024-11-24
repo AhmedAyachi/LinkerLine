@@ -17,6 +17,8 @@ export default class LinkerLineChain<Type,Path extends LinkerLinePath> {
     readonly partiallyLinked:boolean;
     link():void;
     unlink():void;
+    pushNode(node:HTMLElement):void;
+    unshiftNode(node:HTMLElement):void;
 
     static getLineChain<Type,Path extends LinkerLinePath>(line:LinkerLine<Type,Type,Path>|any):LinkerLineChain<Type,Path>|null;
 }

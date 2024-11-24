@@ -10,10 +10,12 @@ export default class LinkerLineChain {
     #focusIndex;
     #linkTimeout=null;
     #onLinkChange=null;
+    #lineOptions=null;
 
     constructor(nodes,options){
         const {linkingDuration=500,lineOptions,onLinkChange}=options||{};
         this.#nodes=nodes;
+        this.#lineOptions=lineOptions;
         this.#onLinkChange=(typeof(onLinkChange)==="function")&&onLinkChange;
         this.#linkingDuration=Number(linkingDuration);
         const linked=this.#linked=Boolean(options.linked);
@@ -35,9 +37,10 @@ export default class LinkerLineChain {
     }
 
     link(){if(!this.linked){
-        const nodes=this.#nodes,nodeCount=nodes.length;
-        const maxIndex=nodeCount-2;
+        const nodes=this.#nodes;
         const showLine=()=>{
+            const nodeCount=nodes.length;
+            const maxIndex=nodeCount-2;
             if(this.#focusIndex<=maxIndex){
                 const line=nodes[this.#focusIndex].outLine;
                 clearTimeout(this.#linkTimeout);
@@ -103,6 +106,66 @@ export default class LinkerLineChain {
             lines.push(nodes[i].inLine);
         }
         return lines;
+    }
+
+    unshiftNode(node){
+        if(node instanceof HTMLElement){
+            const nodes=this.#nodes;
+            if(nodes.every($=>$!==node)){
+                const end=nodes.at(0);
+                nodes.unshift(node);
+                const line=new LinkerLine({
+                    ...this.#lineOptions,
+                    start:node,end,
+                    hidden:true,
+                });
+                Object.defineProperty(node,"outLine",{get:()=>line});
+                Object.defineProperty(end,"inLine",{get:()=>line});
+                if(this.#partiallyLinked){
+                    this.#focusIndex++;
+                    const onLinkChange=this.#onLinkChange;
+                    line.show("draw",{duration:this.#linkingDuration});
+                    onLinkChange&&onLinkChange({
+                        startNode:line.start,
+                        endNode:line.end,line,
+                        nodesLinked:true,
+                        hopIndex:0,
+                    });
+                };
+            }
+        }
+        else throw new Error("LinkerLine chain node must be an HTML element");
+    }
+
+    pushNode(node){
+        if(node instanceof HTMLElement){
+            const nodes=this.#nodes;
+            if(nodes.every($=>$!==node)){
+                const start=nodes.at(-1);
+                nodes.push(node);
+                const line=new LinkerLine({
+                    ...this.#lineOptions,
+                    start,end:node,
+                    hidden:true,
+                });
+                Object.defineProperty(start,"outLine",{get:()=>line});
+                Object.defineProperty(node,"inLine",{get:()=>line});
+                if(this.#linked){
+                    this.#linked=false;
+                    this.#focusIndex++;
+                    this.link();
+                    /* const onLinkChange=this.#onLinkChange;
+                    line.show("draw",{duration:this.#linkingDuration});
+                    onLinkChange&&onLinkChange({
+                        startNode:line.start,
+                        endNode:line.end,line,
+                        nodesLinked:true,
+                        hopIndex:nodes.length-2,
+                    }); */
+                };
+            }
+        }
+        else throw new Error("LinkerLine chain node must be an HTML element");
     }
 
     static getLineChain(line){
