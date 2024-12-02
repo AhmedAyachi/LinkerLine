@@ -2,3 +2,5 @@ node_modules
 .vscode
 ToDo.txt
 *.tgz
+dist
+webpack.config.js
