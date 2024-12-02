@@ -2,5 +2,8 @@ node_modules
 .vscode
 ToDo.txt
 *.tgz
+.git/
+.gitignore
+.DS_Store
 dist
 webpack.config.js
