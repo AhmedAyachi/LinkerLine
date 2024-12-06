@@ -6,4 +6,5 @@ ToDo.txt
 .gitignore
 .DS_Store
 dist
+package-lock.json
 webpack.config.js

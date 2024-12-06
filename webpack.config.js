@@ -1,14 +1,19 @@
 
+const pkgjson=require("./package.json");
+const entryFilePath="./src/index.js";
 
 module.exports={
     mode:"production",
-    entry:"./src/index.js",
+    entry:{
+        linkerline:entryFilePath,
+        ["linkerline-"+pkgjson.version]:entryFilePath,
+    },
     output:{
         library:{
             type:"umd",
             name:"LinkerLine",
             export:["default"],
         },
-        filename:"linkerline.min.js",
+        filename:"[name].min.js",
     },
 };

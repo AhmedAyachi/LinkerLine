@@ -7,25 +7,6 @@ export default class LinkerLine<StartType,EndType,Path extends LinkerLinePath="f
      * The instance id, different from the linkerline svg element id
      */
     readonly id:number;
-
-    position():void;
-    /**
-     * Shows the linkerline element
-     */
-    show(effectName?:EffectName,animation?:LinkerLineAnimation):void;
-    /**
-     * Hides the linkerline element
-     */
-    hide(effectName?:EffectName,animation?:LinkerLineAnimation):void;
-    /**
-     * Removes the linkerline from DOM
-     */
-    remove():void;
-    /**
-     * Same as setOptions method of the old implementation
-     * @param props 
-     */
-    setOptions(props:LinkerLineOptions<StartType,EndType>):void;
     /**
      * The linkerline svg element
      */
@@ -56,6 +37,27 @@ export default class LinkerLine<StartType,EndType,Path extends LinkerLinePath="f
      * Returns true if the line was removed using the remove method
      */
     readonly removed:boolean;
+    /**
+     * Updates the line position
+     */
+    position():void;
+    /**
+     * Shows the linkerline element
+     */
+    show(effectName?:EffectName,animation?:LinkerLineAnimation):void;
+    /**
+     * Hides the linkerline element
+     */
+    hide(effectName?:EffectName,animation?:LinkerLineAnimation):void;
+    /**
+     * Removes the linkerline from DOM
+     */
+    remove():void;
+    /**
+     * Same as setOptions method of the old implementation
+     * @param props 
+     */
+    setOptions(props:LinkerLineOptions<StartType,EndType,Path>):void;
 
     static definePlug(options:{
         name:string,
@@ -155,7 +157,7 @@ export default class LinkerLine<StartType,EndType,Path extends LinkerLinePath="f
 }
 
 
-export type LinkerLineProps<StartType,EndType,Path extends LinkerLinePath>=(
+export type LinkerLineProps<StartType,EndType,Path extends LinkerLinePath="fluid">=(
     LinkerLineOptions<StartType,EndType,Path>&
     PathPropsMap[Path]&{
     /**
@@ -164,10 +166,6 @@ export type LinkerLineProps<StartType,EndType,Path extends LinkerLinePath>=(
     */
     parent?:HTMLElement;
     hidden?:boolean;
-    /**
-     * @default "fluid"
-     */
-    path?:Path;
 });
 
 export type PathPropsMap={
