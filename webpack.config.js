@@ -6,7 +6,6 @@ module.exports={
     mode:"production",
     entry:{
         linkerline:entryFilePath,
-        ["linkerline-"+pkgjson.version]:entryFilePath,
     },
     output:{
         library:{
