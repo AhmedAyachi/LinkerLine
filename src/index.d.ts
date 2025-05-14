@@ -172,7 +172,7 @@ export type PathPropsMap={
     "arc":{},
     "grid":{
         /**
-         * @default 40
+         * @default 30
          */
         minGridLength?:number,
     },
@@ -197,6 +197,9 @@ export type LinkerLineOptions<StartType,EndType,Path extends LinkerLinePath="flu
         endColor?:string,
     };
     dropShadow?:LinkerLineDropShadow;
+    /**
+     * @default 4
+     */
     size?:number;
     outline?:boolean;
     /**

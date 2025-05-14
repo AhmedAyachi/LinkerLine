@@ -15,7 +15,7 @@ This library tackles all the issues mentioned above and provides more  options a
 |New Options|Description|
 |--|--|
 |parent|where to insert the line element, default to document.body in **<1.2.0** and to the line's end element parentNode in **>=1.2.0** |
-|minGridLength|The minimun line length (default to ***40***). Only applied to grid-pathed lines **[>=1.6.0]**|
+|minGridLength|The minimun line length (default to ***30***). Only applied to grid-pathed lines **[>=1.6.0]**|
 
 |New Properties|Type|Description|
 |--------------|----|-----------|
@@ -26,8 +26,9 @@ This library tackles all the issues mentioned above and provides more  options a
 Changes :
  1. pointAnchor, areaAnchor, mouseHoverAnchor are renamed to PointAnchor, AreaAnchor, MouseHoverAnchor.
  2. CaptionLabel and PathLabel are merged into Label. The Label has an option named "on" that takes as a value either "path" or "element".
- 3. animation object "timing" property is renamed to "easing".
- 4. dash "len" property is renamed to "length".
+ 3. MouseHoverAnchor onSwitch is renamed to onToggle [>=1.2.1]
+ 4. animation object "timing" property is renamed to "easing".
+ 5. dash "len" property is renamed to "length".
  
 ## Illustration
 ![Illustration](https://raw.githubusercontent.com/AhmedAyachi/RepoIllustrations/main/LinkerLine/Illustration.gif)
