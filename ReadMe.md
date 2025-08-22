@@ -1,5 +1,8 @@
 ## What is this ?
 This project is an extension to the original leader-line project https://github.com/anseki/leader-line v1.0.7.
+<a href="https://www.buymeacoffee.com/ahmedayachi" target="_blank">
+  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="50" width="210">
+</a>
 
 ## Why using it ?
 The original LeaderLine class lacks:
@@ -159,3 +162,9 @@ It allows defining custom plugs via the static method LinkerLine.**definePlug( o
 	});
 
 For svgs, when a function is specified, the **color** and the **weight**  params will respectively make sure that the plug will match the line color (or start/endPlugColor if specified) and thickness.
+
+##
+Thanks for the coffee ☕️, I might buy you a beer 🍺 some day.
+<a href="https://www.buymeacoffee.com/ahmedayachi" target="_blank">
+  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="50" width="210">
+</a>
