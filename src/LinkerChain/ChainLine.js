@@ -4,20 +4,49 @@ import LinkerLine from "../LinkerLine/LinkerLine";
 export default class ChainLine extends LinkerLine {
     constructor(options){
         super(options);
-        Object.defineProperty(this.end,"inLine",{get:()=>this});
-        Object.defineProperty(this.start,"outLine",{get:()=>this});
+        const {start,end}=this;
+        if(!Array.isArray(end.inLines)) end.inLines=[];
+        if(!Array.isArray(start.outLines)) start.outLines=[];
+
+        end.inLines.push(this);
+        start.outLines.push(this);
+
+        Object.defineProperty(end,"inLine",{get:()=>{
+            const {inLines}=end;
+            return Array.isArray(inLines)?inLines.at(-1):null;
+        }});
+        Object.defineProperty(start,"outLine",{get:()=>{
+            const {outLines}=start;
+            return Array.isArray(outLines)?outLines.at(-1):null;
+        }});
     }
 
     get standalone(){ return false };
     get removed(){ return undefined };
-
-    remove(){
-        throw new Error("remove called on a chain line");
+    
+    hide(){ throw new Error("can't manually hide chain lines") };
+    #hide(...params){ super.hide("draw",...params) };
+    static hide(line,...params){
+        line.#hide(...params);
     }
 
-    
+    show(){ throw new Error("can't manually show chain lines") };
+    #show(...params){ super.show("draw",...params) };
+    static show(line,...params){
+        line.#show(...params);
+    }
+
+    remove(){ throw new Error("can't manually remove chain lines") };
     #remove(){ super.remove() };
     static remove(line){
+        const {start,end}=line;
+        [start.outLines,end.inLines].forEach(lines=>{
+            if(Array.isArray(lines)){
+                const index=lines.indexOf(line);
+                lines.splice(index,1);
+                if(lines.length<1) delete start.outLines;
+            }
+        });
         line.#remove();
     }
 }

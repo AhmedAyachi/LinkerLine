@@ -16,18 +16,29 @@ export default class LinkerChain<Type,Path extends LinkerLinePath> {
      * true if at least one line is visible, false otherwise
      */
     readonly partiallyLinked:boolean;
+    readonly destroyed:boolean;
+    /**
+     * adds new nodes to the end of the chain.
+     * @param node 
+     */
+    append(...newNodes:HTMLElement[]):void;
+    /**
+     * adds new nodes to the beginning of the chain.
+     * @param node 
+     */
+    prepend(...newNodes:HTMLElement[]):void;
+
     link(options?:LinkingOptions):void;
     unlink(options?:LinkingOptions):void;
     /**
-     * appends a new node to the end of the chain
-     * @param node 
+     * links/unlinks nodes based on the chain current state
+     * and the value of the toIndex option.
      */
-    pushNode(node:HTMLElement):void;
+    relink(options?:LinkingOptions):void;
     /**
-     * adds a new node at the start of the chain
-     * @param node 
+     * destroys the chain.
      */
-    unshiftNode(node:HTMLElement):void;
+    destroy():void;
 }
 
 export type LinkerChainOptions<Type,Path extends LinkerLinePath>={
@@ -56,10 +67,16 @@ export type LinkerChainOptions<Type,Path extends LinkerLinePath>={
 type LinkerChainNode<Type>=Type&{
     readonly inLine:LinkerLine<Type,Type>|undefined,
     readonly outLine:LinkerLine<Type,Type>|undefined,
+    readonly inLines:LinkerLine<Type,Type>[];
+    readonly outLines:LinkerLine<Type,Type>[];
 }
 
 type LinkingOptions={
     toIndex?:number,
 }
 
-type ChainLine<StartType,EndType,Path extends LinkerLinePath>=Omit<LinkerLine<StartType,EndType,Path>,"remove"|"removed">;
+type ChainLine<StartType,EndType,Path extends LinkerLinePath>=Omit<
+    LinkerLine<StartType,EndType,Path>,
+    "hide"|"show"|
+    "remove"|"removed"
+>;
