@@ -1,4 +1,4 @@
-import LinkerLine from "../index";
+import ChainLine from "./ChainLine";
 
 
 export default class LinkerLineChain {
@@ -7,7 +7,7 @@ export default class LinkerLineChain {
     #linked=false;
     #partiallyLinked=false;
     #linkingDuration;
-    #focusIndex;
+    #onfocusIndex;
     #linkTimeout=null;
     #onLinkChange=null;
     #lineOptions=null;
@@ -22,82 +22,83 @@ export default class LinkerLineChain {
         this.#partiallyLinked=linked;
         let i=-1;
         const maxi=nodes.length-2;
-        this.#focusIndex=linked?maxi:0;
+        this.#onfocusIndex=linked?maxi:0;
         while(i<maxi){
             i++;
-            const start=nodes[i],end=nodes[i+1];
-            const line=new LinkerLine({
-                ...lineOptions,start,end,
+            new ChainLine({
+                ...lineOptions,
+                start:nodes[i],
+                end:nodes[i+1],
                 hidden:!this.#linked,
             });
-            Object.defineProperty(start,"outLine",{get:()=>line});
-            Object.defineProperty(end,"inLine",{get:()=>line});
         }
-        statics.chains.push(this);
     }
 
-    link(){if(!this.linked){
+    link(options){if(!this.linked){
+        let {toIndex}=options||{};
+        if(Number.isFinite(toIndex)) toIndex=Math.max(0,toIndex);
+        else toIndex=Infinity;
         const nodes=this.#nodes;
         const showLine=()=>{
-            const nodeCount=nodes.length;
-            const maxIndex=nodeCount-2;
-            if(this.#focusIndex<=maxIndex){
-                const line=nodes[this.#focusIndex].outLine;
+            const lastIndex=nodes.length-1;
+            const maxIndex=Math.min(lastIndex,toIndex);
+            if(this.#onfocusIndex<maxIndex){
                 clearTimeout(this.#linkTimeout);
+                const line=nodes[this.#onfocusIndex].outLine;
+                this.#onfocusIndex++;
                 line.show("draw",{duration:this.#linkingDuration});
                 this.#partiallyLinked=true;
                 this.#linkTimeout=setTimeout(()=>{
                     const onLinkChange=this.#onLinkChange;
-                    this.#focusIndex++;
-                    showLine();
                     onLinkChange&&onLinkChange({
                         startNode:line.start,
                         endNode:line.end,line,
                         nodesLinked:true,
-                        hopIndex:this.#focusIndex-(this.#linked?0:1),
+                        hopIndex:this.#onfocusIndex-1,
                     });
+                    showLine();
                 },this.#linkingDuration);
-            }
-            else{
-                this.#focusIndex--;
-                this.#linked=true;
+            } else {
+                this.#onfocusIndex=maxIndex;
+                this.#linked=(this.#onfocusIndex>=lastIndex);
             }
         };
         showLine();
     }}
 
-    unlink(){if(this.partiallyLinked){
+    unlink(options){if(this.partiallyLinked){
+        let {toIndex}=options||{};
         const nodes=this.#nodes;
+        if(Number.isFinite(toIndex)) toIndex=Math.min(nodes.length-1,toIndex);
+        else toIndex=0;
         const hideLine=()=>{
-            if(this.#focusIndex>-1){
-                const line=nodes[this.#focusIndex].outLine;
+            if(this.#onfocusIndex>toIndex){
                 clearTimeout(this.#linkTimeout);
-                this.#linked=false;
+                const line=nodes[this.#onfocusIndex].inLine;
+                this.#onfocusIndex--;
                 line.hide("draw",{duration:this.#linkingDuration});
+                this.#linked=false;
                 this.#linkTimeout=setTimeout(()=>{
                     const onLinkChange=this.#onLinkChange;
-                    this.#focusIndex--;
-                    const firstReached=this.#focusIndex<0;
-                    hideLine();
                     onLinkChange&&onLinkChange({
                         startNode:line.start,
                         endNode:line.end,line,
                         nodesLinked:false,
-                        hopIndex:this.#focusIndex+(firstReached?0:1),
+                        hopIndex:this.#onfocusIndex,
                     });
+                    hideLine();
                 },this.#linkingDuration);
-            }
-            else{
-                this.#focusIndex++;
-                this.#partiallyLinked=false;
+            } else {
+                this.#onfocusIndex=toIndex;
+                this.#partiallyLinked=(this.#onfocusIndex>1);
             }
         }
         hideLine();
     }}
 
-    get nodes(){return [...this.#nodes]};
-    get linked(){return this.#linked};
-    get partiallyLinked(){return this.#partiallyLinked};
+    get nodes(){ return [...this.#nodes] };
+    get linked(){ return this.#linked };
+    get partiallyLinked(){ return this.#partiallyLinked };
 
     get lines(){
         const lines=[];
@@ -114,15 +115,13 @@ export default class LinkerLineChain {
             if(nodes.every($=>$!==node)){
                 const end=nodes.at(0);
                 nodes.unshift(node);
-                const line=new LinkerLine({
+                const line=new ChainLine({
                     ...this.#lineOptions,
                     start:node,end,
                     hidden:true,
                 });
-                Object.defineProperty(node,"outLine",{get:()=>line});
-                Object.defineProperty(end,"inLine",{get:()=>line});
                 if(this.#partiallyLinked){
-                    this.#focusIndex++;
+                    this.#onfocusIndex++;
                     const onLinkChange=this.#onLinkChange;
                     line.show("draw",{duration:this.#linkingDuration});
                     onLinkChange&&onLinkChange({
@@ -143,51 +142,17 @@ export default class LinkerLineChain {
             if(nodes.every($=>$!==node)){
                 const start=nodes.at(-1);
                 nodes.push(node);
-                const line=new LinkerLine({
+                new ChainLine({
                     ...this.#lineOptions,
                     start,end:node,
                     hidden:true,
                 });
-                Object.defineProperty(start,"outLine",{get:()=>line});
-                Object.defineProperty(node,"inLine",{get:()=>line});
                 if(this.#linked){
                     this.#linked=false;
-                    this.#focusIndex++;
                     this.link();
-                    /* const onLinkChange=this.#onLinkChange;
-                    line.show("draw",{duration:this.#linkingDuration});
-                    onLinkChange&&onLinkChange({
-                        startNode:line.start,
-                        endNode:line.end,line,
-                        nodesLinked:true,
-                        hopIndex:nodes.length-2,
-                    }); */
                 };
             }
         }
         else throw new Error("LinkerLine chain node must be an HTML element");
     }
-
-    static getLineChain(line){
-        if(line instanceof LinkerLine){
-            const {chains}=statics,chainCount=chains.length;
-            let i=0;
-            while(i<chainCount){
-                const chain=chains[i];
-                let j=1;
-                const {nodes}=chain,nodeCount=nodes.length;
-                while(j<nodeCount){
-                    if(line===nodes[j].inLine) return chain;
-                    j++;
-                }
-                i++;
-            }
-            return null;
-        }
-        else return null;
-    }
-}
-
-const statics={
-    chains:[],
 }

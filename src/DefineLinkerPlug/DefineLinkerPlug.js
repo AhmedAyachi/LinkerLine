@@ -1,4 +1,4 @@
-import LeaderLine from "./LeaderLine";
+import LeaderLine from "../LeaderLine";
 
 
 export default function(options){

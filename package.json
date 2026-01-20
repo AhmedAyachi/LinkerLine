@@ -1,7 +1,7 @@
 {
   "name": "linkerline",
-  "version": "1.6.2",
-  "description": "An extension to the LeaderLine project: adding parent element,scroll position, absolute parent positioning and more",
+  "version": "1.6.1",
+  "description": "draws a line in a web page",
   "main": "src/index.js",
   "types": "src/index.d.ts",
   "scripts": {

@@ -1,12 +1,13 @@
-import LinkerLine,{LinkerLineOptions,LinkerLinePath, PathPropsMap} from "../index";
+import LinkerLine from "../LinkerLine/LinkerLine";
+import {LinkerLineOptions,LinkerLinePath,PathPropsMap} from "../LinkerLine/LinkerLine";
 
 
-export default class LinkerLineChain<Type,Path extends LinkerLinePath> {
+export default class LinkerChain<Type,Path extends LinkerLinePath> {
 
-    constructor(nodes:Type[],options?:LinkerLineChainOptions<Type,Path>);
+    constructor(nodes:Type[],options?:LinkerChainOptions<Type,Path>);
 
-    readonly nodes:LinkerLineChainNode<Type>[];
-    readonly lines:LinkerLine<Type,Type,Path>[];
+    readonly nodes:LinkerChainNode<Type>[];
+    readonly lines:ChainLine<Type,Type,Path>[];
     /**
      * true if all nodes are fully linked, false otherwise
      */
@@ -15,8 +16,8 @@ export default class LinkerLineChain<Type,Path extends LinkerLinePath> {
      * true if at least one line is visible, false otherwise
      */
     readonly partiallyLinked:boolean;
-    link():void;
-    unlink():void;
+    link(options?:LinkingOptions):void;
+    unlink(options?:LinkingOptions):void;
     /**
      * appends a new node to the end of the chain
      * @param node 
@@ -27,11 +28,9 @@ export default class LinkerLineChain<Type,Path extends LinkerLinePath> {
      * @param node 
      */
     unshiftNode(node:HTMLElement):void;
-
-    static getLineChain<Type,Path extends LinkerLinePath>(line:LinkerLine<Type,Type,Path>|any):LinkerLineChain<Type,Path>|null;
 }
 
-export type LinkerLineChainOptions<Type,Path extends LinkerLinePath>={
+export type LinkerChainOptions<Type,Path extends LinkerLinePath>={
     /**
      * Line draw animation duration in milliseconds
      * @default 500
@@ -46,15 +45,21 @@ export type LinkerLineChainOptions<Type,Path extends LinkerLinePath>={
      * Called on each node-to-node connection change.
      */
     onLinkChange?(context:{
-        startNode:LinkerLineChainNode<Type>,
-        endNode:LinkerLineChainNode<Type>,
+        startNode:LinkerChainNode<Type>,
+        endNode:LinkerChainNode<Type>,
         line:LinkerLine<Type,Type,Path>,
         nodesLinked:boolean,
         hopIndex:number,
     }):void;
 }
 
-type LinkerLineChainNode<Type>=Type&{
+type LinkerChainNode<Type>=Type&{
     readonly inLine:LinkerLine<Type,Type>|undefined,
     readonly outLine:LinkerLine<Type,Type>|undefined,
 }
+
+type LinkingOptions={
+    toIndex?:number,
+}
+
+type ChainLine<StartType,EndType,Path extends LinkerLinePath>=Omit<LinkerLine<StartType,EndType,Path>,"remove"|"removed">;
