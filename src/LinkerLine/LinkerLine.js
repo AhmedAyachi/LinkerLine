@@ -1,5 +1,6 @@
 import LeaderLine from "../LeaderLine";
-import {setLinePlugStyle} from "../DefineLinkerPlug/DefineLinkerPlug";
+import {toLeaderLineAnimationOptions} from "../index";
+import {setLinePlugStyle} from "../LinkerPlug/DefinePlug";
 
 
 export default class LinkerLine extends LeaderLine { 
@@ -107,21 +108,16 @@ export default class LinkerLine extends LeaderLine {
         }
     }
 
-    static PointAnchor(element,options){
-        return LeaderLine.pointAnchor(element,options);
+    static PointAnchor(){
+        throw new Error("[deprecated] use LinkerAnchor.Point export instead");
     }
 
-    static AreaAnchor(element,options){
-        return LeaderLine.areaAnchor(element,options);
+    static AreaAnchor(){
+        throw new Error("[deprecated] use LinkerAnchor.Area export instead");
     }
 
-    static MouseHoverAnchor(element,options){
-        if(options){
-            const {onToggle}=options;
-            if(onToggle){options.onSwitch=onToggle};
-            options.animOptions=toLeaderLineAnimationOptions(options.animation);
-        }
-        return LeaderLine.mouseHoverAnchor(element,options);
+    static MouseHoverAnchor(){
+        throw new Error("[deprecated] use LinkerAnchor.MouseHover export instead");
     }
 
     static Label(text,options){
@@ -158,11 +154,4 @@ const toLeaderLineDash=(dash)=>{
         dash.len=dash.length;
         delete dash.length;
     }
-}
-
-const toLeaderLineAnimationOptions=(options)=>{
-    if(options&&(typeof(options)==="object")){
-        options.timing=options.easing;
-        delete options.easing;
-    };
 }

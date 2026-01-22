@@ -68,40 +68,6 @@ export default class LinkerLine<StartType,EndType,Path extends LinkerLinePath="f
      */
     static removeAll():void;
 
-    static PointAnchor(element:HTMLElement,options?:{
-        x?:number|string,
-        y?:number|string,
-    }):PointAnchor;
-
-    static AreaAnchor<Shape extends keyof LinkerLineAnchorOptions>(element:HTMLElement,options?:{
-        x?:number|string,
-        y?:number|string,
-        /**
-         * @default "rect"
-         */
-        shape?:Shape,
-        color?:string,
-        fillColor?:string,
-        size?:number,
-        dash?:LinkerLineDash,
-    }&LinkerLineAnchorOptions[Shape]):AreaAnchor;
-
-    static MouseHoverAnchor(element:HTMLElement,options?:{
-        showEffectName?:EffectName,
-        animation?:LinkerLineAnimation,
-        style?:Partial<CSSStyleDeclaration>,
-        hoverStyle?:Partial<CSSStyleDeclaration>,
-         /**
-         * A function that is called on line did show/hide, with a mouse event argument
-         */
-        onToggle?(event:MouseEvent):void,
-        /**
-         * A function that is called on line did show/hide, with a mouse event argument
-         * @deprecated use onToggle instead
-         */
-        onSwitch?(event:MouseEvent):void,
-    }):MouseHoverAnchor;
-
     static Label(text:string,options?:{
         /**
          * @default "path"
@@ -115,7 +81,26 @@ export default class LinkerLine<StartType,EndType,Path extends LinkerLinePath="f
          */
         outlineColor?:string,
     }):LinkerLineLabel;
+
+    /**
+     * @deprecated use LinkerAnchor.Point
+     */
+    static PointAnchor():unknown;
+    /**
+     * @deprecated use LinkerAnchor.Area
+     */
+    static AreaAnchor():unknown;
+    /**
+     * @deprecated use LinkerAnchor.MouseHover
+     */
+    static MouseHoverAnchor():unknown;
 }
+
+export type LinkerLineEntity={
+    readonly _id:number,
+    readonly isRemoved:boolean,
+}
+export interface LinkerLineLabel extends LinkerLineEntity {}
 
 
 export type LinkerLineProps<StartType,EndType,Path extends LinkerLinePath="fluid">=(
@@ -223,8 +208,6 @@ export type LinkerLineOptions<StartType,EndType,Path extends LinkerLinePath="flu
      * or true to enable it with all default options
      */
     dash?:boolean|LinkerLineDash;
-    /* set dash(value?:LinkerLineDash);
-    get dash()?:LinkerLineDash; */
     /**
      * @default "auto"
      */
@@ -284,35 +267,4 @@ export type LinkerLineDropShadow=boolean|{
      * @default 0.8
      */
     opacity?:number,
-}
-
-export type LinkerLineEntity={
-    readonly _id:number,
-    readonly isRemoved:boolean,
-}
-export interface PointAnchor extends LinkerLineEntity {}
-export interface AreaAnchor extends LinkerLineEntity {}
-export interface MouseHoverAnchor extends LinkerLineEntity {}
-export interface LinkerLineLabel extends LinkerLineEntity {}
-
-export type LinkerLineAnchorOptions={
-    "rect":{
-        /**
-         * @default "110%"
-         */
-        width?:number|string,
-        /**
-         * @default "110%"
-         */
-        height?:number|string,
-    },
-    "circle":{
-        /**
-         * @default 0
-         */
-        radius?:number,
-    },
-    "polygon":{
-        points?:(number|string)[][],
-    },
 }

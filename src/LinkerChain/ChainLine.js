@@ -11,6 +11,7 @@ export default class ChainLine extends LinkerLine {
         end.inLines.push(this);
         start.outLines.push(this);
 
+        //TODO: check redefinition as it will throw an error.
         Object.defineProperty(end,"inLine",{get:()=>{
             const {inLines}=end;
             return Array.isArray(inLines)?inLines.at(-1):null;
@@ -39,12 +40,13 @@ export default class ChainLine extends LinkerLine {
     remove(){ throw new Error("can't manually remove chain lines") };
     #remove(){ super.remove() };
     static remove(line){
-        const {start,end}=line;
-        [start.outLines,end.inLines].forEach(lines=>{
+        [line.start,line.end].forEach((element,i)=>{
+            const key=i?"inLines":"outLines";
+            const lines=element[key];
             if(Array.isArray(lines)){
                 const index=lines.indexOf(line);
-                lines.splice(index,1);
-                if(lines.length<1) delete start.outLines;
+                if(index>=0) lines.splice(index,1);
+                if(lines.length<1) delete element[key];
             }
         });
         line.#remove();
