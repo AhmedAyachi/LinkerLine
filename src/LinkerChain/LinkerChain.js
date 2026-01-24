@@ -1,7 +1,7 @@
 import ChainLine from "./ChainLine";
 
 
-export default class LinkerLineChain {
+export default class LinkerChain {
     
     #nodes;
     #linkingDuration;
@@ -9,7 +9,7 @@ export default class LinkerLineChain {
     #linkTimeout;
     #onLinkChange;
     #lineOptions;
-    #undestroyed=true;
+    #destroyed=false;
 
     constructor(nodes,options){
         if(!Array.isArray(nodes)) nodes=[];
@@ -33,88 +33,98 @@ export default class LinkerLineChain {
         }
     }
 
-    link(options){if(this.#undestroyed&&!this.linked){
-        let {toIndex}=options||{};
-        if(Number.isFinite(toIndex)) toIndex=Math.max(0,toIndex);
-        else toIndex=Infinity;
-        if(toIndex>this.#onfocusIndex){
-            const nodes=this.#nodes;
-            const showLine=()=>{
-                const lastIndex=nodes.length-1;
-                const maxIndex=Math.min(lastIndex,toIndex);
-                if(this.#onfocusIndex<maxIndex){
-                    clearTimeout(this.#linkTimeout);
-                    const line=nodes[this.#onfocusIndex].outLine;
-                    this.#onfocusIndex++;
-                    ChainLine.show(line,{duration:this.#linkingDuration});
-                    this.#linkTimeout=setTimeout(()=>{
-                        this.#linkTimeout=null;
-                        const onLinkChange=this.#onLinkChange;
-                        onLinkChange&&onLinkChange({
-                            startNode:line.start,
-                            endNode:line.end,line,
-                            nodesLinked:true,
-                            hopIndex:this.#onfocusIndex-1,
-                        });
-                        showLine();
-                    },this.#linkingDuration);
-                } else {
-                    this.#onfocusIndex=maxIndex;
-                }
-            };
-            showLine();
-        }
-    }}
-
-    unlink(options){if(this.partiallyLinked){
-        let {toIndex}=options||{};
-        const nodes=this.#nodes;
-        if(Number.isFinite(toIndex)) toIndex=Math.min(nodes.length-1,toIndex);
-        else toIndex=0;
-        if(toIndex<this.#onfocusIndex){
-            const hideLine=()=>{
-                if(this.#onfocusIndex>toIndex){
-                    clearTimeout(this.#linkTimeout);
-                    const line=nodes[this.#onfocusIndex].inLine;
-                    this.#onfocusIndex--;
-                    ChainLine.hide(line,{duration:this.#linkingDuration});
-                    this.#linkTimeout=setTimeout(()=>{
-                        this.#linkTimeout=null;
-                        const onLinkChange=this.#onLinkChange;
-                        onLinkChange&&onLinkChange({
-                            startNode:line.start,
-                            endNode:line.end,line,
-                            nodesLinked:false,
-                            hopIndex:this.#onfocusIndex,
-                        });
-                        hideLine();
-                    },this.#linkingDuration);
-                } else {
-                    this.#onfocusIndex=toIndex;
-                }
+    link(options){
+        if(this.#destroyed) throw DestroyedChainError("link");
+        else if(!this.linked){
+            let {toIndex}=options||{};
+            if(Number.isFinite(toIndex)) toIndex=Math.max(0,toIndex);
+            else toIndex=Infinity;
+            if(toIndex>this.#onfocusIndex){
+                const nodes=this.#nodes;
+                const showLine=()=>{
+                    const lastIndex=nodes.length-1;
+                    const maxIndex=Math.min(lastIndex,toIndex);
+                    if(this.#onfocusIndex<maxIndex){
+                        clearTimeout(this.#linkTimeout);
+                        const line=nodes[this.#onfocusIndex].outLine;
+                        this.#onfocusIndex++;
+                        ChainLine.show(line,{duration:this.#linkingDuration});
+                        this.#linkTimeout=setTimeout(()=>{
+                            this.#linkTimeout=null;
+                            const onLinkChange=this.#onLinkChange;
+                            onLinkChange&&onLinkChange({
+                                startNode:line.start,
+                                endNode:line.end,line,
+                                nodesLinked:true,
+                                hopIndex:this.#onfocusIndex-1,
+                            });
+                            showLine();
+                        },this.#linkingDuration);
+                    } else {
+                        this.#onfocusIndex=maxIndex;
+                    }
+                };
+                showLine();
             }
-            hideLine();
         }
-    }}
+    }
 
-    relink(options){if(this.#undestroyed&&options){
-        const {toIndex}=options;
-        if(toIndex>this.#onfocusIndex) this.link(options);
-        else if(toIndex<this.#onfocusIndex) this.unlink(options);
-    }}
+    unlink(options){
+        if(this.#destroyed) throw DestroyedChainError("unlink");
+        else if(this.partiallyLinked){
+            let {toIndex}=options||{};
+            const nodes=this.#nodes;
+            if(Number.isFinite(toIndex)) toIndex=Math.min(nodes.length-1,toIndex);
+            else toIndex=0;
+            if(toIndex<this.#onfocusIndex){
+                const hideLine=()=>{
+                    if(this.#onfocusIndex>toIndex){
+                        clearTimeout(this.#linkTimeout);
+                        const line=nodes[this.#onfocusIndex].inLine;
+                        this.#onfocusIndex--;
+                        ChainLine.hide(line,{duration:this.#linkingDuration});
+                        this.#linkTimeout=setTimeout(()=>{
+                            this.#linkTimeout=null;
+                            const onLinkChange=this.#onLinkChange;
+                            onLinkChange&&onLinkChange({
+                                startNode:line.start,
+                                endNode:line.end,line,
+                                nodesLinked:false,
+                                hopIndex:this.#onfocusIndex,
+                            });
+                            hideLine();
+                        },this.#linkingDuration);
+                    } else {
+                        this.#onfocusIndex=toIndex;
+                    }
+                }
+                hideLine();
+            }
+        }
+    }
 
-    get nodes(){ return this.#undestroyed?[...this.#nodes]:undefined };
+    relink(options){
+        if(this.#destroyed) throw DestroyedChainError("relink");
+        else if(options){
+            const {toIndex}=options;
+            if(toIndex>this.#onfocusIndex) this.link(options);
+            else if(toIndex<this.#onfocusIndex) this.unlink(options);
+        }
+    }
+
+    get nodes(){ return this.#destroyed?undefined:[...this.#nodes] };
     get linked(){
-        if(this.#undestroyed) return this.#onfocusIndex>=(this.#nodes.length-1);
-        else return undefined;
+        if(this.#destroyed) return undefined;
+        else return this.#onfocusIndex>=(this.#nodes.length-1);
     };
     get partiallyLinked(){
-        if(this.#undestroyed) return this.#onfocusIndex>=1;
-        else return undefined;
+        if(this.#destroyed) return undefined;
+        else return this.#onfocusIndex>=1;
     };
 
     get lines(){
-        if(this.#undestroyed){
+        if(this.#destroyed) return undefined;
+        else{
             const lines=[];
             const nodes=this.#nodes,{length}=nodes;
             for(let i=1;i<length;i++){
@@ -122,64 +132,69 @@ export default class LinkerLineChain {
             }
             return lines;
         }
-        else return undefined;
     }
 
-    get destroyed(){ return !this.#undestroyed };
+    get destroyed(){ return Boolean(this.#destroyed) };
 
-    prepend(...newNodes){if(this.#undestroyed&&newNodes.length){
-        const {partiallyLinked}=this;
-        const {length}=newNodes;
-        for(let i=length-1;i>=0;i--){
-            const node=newNodes[i];
-            if(node instanceof HTMLElement){
-                const nodes=this.#nodes;
-                if(!nodes.includes(node)){
-                    const end=nodes.at(0);
-                    nodes.unshift(node);
-                    const line=new ChainLine({
-                        ...this.#lineOptions,
-                        start:node,end,
-                        hidden:true,
-                    });
-                    if(partiallyLinked){
-                        this.#onfocusIndex++;
-                        ChainLine.show(line,{duration:this.#linkingDuration});
-                        const onLinkChange=this.#onLinkChange;
-                        onLinkChange&&onLinkChange({
-                            startNode:line.start,
-                            endNode:line.end,line,
-                            nodesLinked:true,
-                            hopIndex:i,
+    prepend(...newNodes){
+        if(this.#destroyed) throw DestroyedChainError("prepend");
+        else if(newNodes.length){
+            const {partiallyLinked}=this;
+            const {length}=newNodes;
+            for(let i=length-1;i>=0;i--){
+                const node=newNodes[i];
+                if(node instanceof HTMLElement){
+                    const nodes=this.#nodes;
+                    if(!nodes.includes(node)){
+                        const end=nodes.at(0);
+                        nodes.unshift(node);
+                        const line=new ChainLine({
+                            ...this.#lineOptions,
+                            start:node,end,
+                            hidden:true,
+                        });
+                        if(partiallyLinked){
+                            this.#onfocusIndex++;
+                            ChainLine.show(line,{duration:this.#linkingDuration});
+                            const onLinkChange=this.#onLinkChange;
+                            onLinkChange&&onLinkChange({
+                                startNode:line.start,
+                                endNode:line.end,line,
+                                nodesLinked:true,
+                                hopIndex:i,
+                            });
+                        }
+                    }
+                } else throw new Error("LinkerLine chain node must be an HTMLElement");
+            }
+        }
+    }
+
+    append(...newNodes){
+        if(this.#destroyed) throw DestroyedChainError("append");
+        else if(newNodes.length){
+            const {linked}=this;
+            for(const node of newNodes){
+                if(node instanceof HTMLElement){
+                    const nodes=this.#nodes;
+                    if(!nodes.includes(node)){
+                        const start=nodes.at(-1);
+                        nodes.push(node);
+                        new ChainLine({
+                            ...this.#lineOptions,
+                            start,end:node,
+                            hidden:true,
                         });
                     }
-                }
-            } else throw new Error("LinkerLine chain node must be an HTMLElement");
+                } else throw new Error("LinkerLine chain node must be an HTMLElement");
+            }
+            if(linked) this.link();
         }
-    }}
+    }
 
-    append(...newNodes){if(this.#undestroyed&&newNodes.length){
-        const {linked}=this;
-        for(const node of newNodes){
-            if(node instanceof HTMLElement){
-                const nodes=this.#nodes;
-                if(!nodes.includes(node)){
-                    const start=nodes.at(-1);
-                    nodes.push(node);
-                    new ChainLine({
-                        ...this.#lineOptions,
-                        start,end:node,
-                        hidden:true,
-                    });
-                }
-            } else throw new Error("LinkerLine chain node must be an HTMLElement");
-        }
-        if(linked) this.link();
-    }}
-
-    destroy(){if(this.#undestroyed){
+    destroy(){if(!this.#destroyed){
         const {lines}=this;
-        this.#undestroyed=false;
+        this.#destroyed=true;
         lines.forEach(ChainLine.remove);
         this.#nodes=null;
         clearTimeout(this.#linkTimeout);
@@ -189,3 +204,5 @@ export default class LinkerLineChain {
         this.#onLinkChange=null;
     }}
 }
+
+const DestroyedChainError=(methodName)=>new Error(`calling ${methodName} on a destroyed chain.`);
