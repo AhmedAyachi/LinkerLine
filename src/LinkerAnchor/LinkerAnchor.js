@@ -8,16 +8,6 @@ export default class LinkerAnchor {
         return LeaderLine.pointAnchor(element,options);
     }
 
-    static Area(element,options){
-        if(options){
-            options.color=options.strokeColor;
-        }
-        const anchorEl=LeaderLine.areaAnchor(element,options);
-        console.log("anchorEl",anchorEl);
-        console.log("LeaderLine",LeaderLine.a);
-        return anchorEl;
-    }
-
     static MouseHover(element,options){
         if(options){
             const {animation}=options;
@@ -25,6 +15,38 @@ export default class LinkerAnchor {
             options.animOptions=toLeaderLineAnimationOptions(animation);
             options.showEffectName=animation&&animation.effect;
         }
-        return LeaderLine.mouseHoverAnchor(element,options);
+        return LeaderLine.mouseHoverAnchor(element,options);        
+    }
+
+    static Area(element,options){
+        if(options){
+            options.color=options.strokeColor;
+            options.size="strokeWidth" in options?options.strokeWidth:2;
+            options.shape=(()=>{
+                const {shape}=options;
+                switch(shape){
+                    case "circle": 
+                        throw new Error(`"circle" shape deprecated, use "ellipse" instead`);
+                    case "ellipse": return "circle";
+                    default: return shape;
+                };
+            })();
+        }
+        const anchorData=LeaderLine.areaAnchor(element,options);
+        const anchorId=anchorData._id;
+        const anchor=LeaderLine.anchors[anchorId],{svg,conf}=anchor;
+        conf.update=(()=>{
+            const update=conf.update.bind(conf);
+            return (...args)=>{
+                update(...args);
+                const {bBoxRel}=anchor.curStats;
+                ["left","top"].forEach(side=>{ 
+                    svg.style[side]=bBoxRel[side];
+                });
+            };
+        })();
+        svg.style.zIndex=1036372536;
+        element.appendChild(svg);
+        return anchorData;
     }
 }

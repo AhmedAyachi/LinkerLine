@@ -10,7 +10,6 @@ export default class LinkerAnchor {
     static Area<Shape extends keyof LinkerAnchorOptions>(element:HTMLElement,options?:{
         x?:number|string,
         y?:number|string,
-        size?:number,
         dash?:LinkerLineDash,
         /**
          * @default "rect"
@@ -21,6 +20,7 @@ export default class LinkerAnchor {
          * @default line.color
          */
         strokeColor?:string,
+        strokeWidth?:number,
         
     }&LinkerAnchorOptions[Shape]):AreaAnchor;
 
@@ -50,11 +50,15 @@ export type LinkerAnchorOptions={
          */
         height?:number|string,
     },
-    "circle":{
+    "ellipse":{
         /**
-         * @default 0
+         * @default "110%"
          */
-        radius?:number,
+        width?:number|string,
+        /**
+         * @default "110%"
+         */
+        height?:number|string,
     },
     "polygon":{
         points?:(number|string)[][],
