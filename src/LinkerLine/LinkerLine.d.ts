@@ -43,11 +43,11 @@ export default class LinkerLine<StartType,EndType,Path extends LinkerLinePath="f
     /**
      * Shows the linkerline element
      */
-    show(effectName?:EffectName,animation?:LinkerLineAnimation):void;
+    show(effect:LinkerLineAnimationEffect,options?:LinkerAnimationOptions):void;
     /**
      * Hides the linkerline element
      */
-    hide(effectName?:EffectName,animation?:LinkerLineAnimation):void;
+    hide(effect:LinkerLineAnimationEffect,options?:LinkerAnimationOptions):void;
     /**
      * Removes the linkerline from DOM
      */
@@ -96,11 +96,11 @@ export default class LinkerLine<StartType,EndType,Path extends LinkerLinePath="f
     static MouseHoverAnchor():unknown;
 }
 
-export type LinkerLineEntity={
+export type LinkerEntity={
     readonly _id:number,
     readonly isRemoved:boolean,
 }
-export interface LinkerLineLabel extends LinkerLineEntity {}
+export interface LinkerLineLabel extends LinkerEntity {}
 
 
 export type LinkerLineProps<StartType,EndType,Path extends LinkerLinePath="fluid">=(
@@ -228,14 +228,18 @@ export type LinkerLineOptions<StartType,EndType,Path extends LinkerLinePath="flu
     endSocketGravity?:LinkerLineSocketGravity;
 }
 
-export type EffectName="none"|"fade"|"draw";
-export type LinkerLineAnimation={
+export type LinkerAnimationOptions={
     /**
      * in milliseconds
      */
     duration?:number,
     easing?:"ease"|"linear"|"ease-in"|"ease-out"|"ease-in-out"|number[],
 }
+export type LinkerLineAnimationEffect="none"|"fade"|"draw";
+export type LinkerLineAnimation=LinkerAnimationOptions&{
+    effect:LinkerLineAnimationEffect,
+}
+
 export type LinkerLinePath=keyof PathPropsMap;
 export type LinkerLineSocket="auto"|"top"|"right"|"bottom"|"left";
 export type LinkerLineSocketGravity="auto"|number|number[];
@@ -243,7 +247,7 @@ export type LinkerLinePlug="disc"|"square"|"arrow1"|"arrow2"|"arrow3"|"hand"|"cr
 export type LinkerLineDash=boolean|{
     length?:"auto"|number,
     gap?:"auto"|number,
-    animation?:boolean|LinkerLineAnimation,
+    animation?:boolean|LinkerAnimationOptions,
 };
 
 export type LinkerLineDropShadow=boolean|{

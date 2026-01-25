@@ -1,4 +1,4 @@
-import {EffectName,LinkerLineEntity,LinkerLineAnimation,LinkerLineDash} from "../LinkerLine/LinkerLine";
+import {LinkerEntity,LinkerLineAnimation,LinkerLineDash} from "../LinkerLine/LinkerLine";
 
 
 export default class LinkerAnchor {
@@ -7,41 +7,39 @@ export default class LinkerAnchor {
         y?:number|string,
     }):PointAnchor;
 
-    static Area<Shape extends keyof LinkerLineAnchorOptions>(element:HTMLElement,options?:{
+    static Area<Shape extends keyof LinkerAnchorOptions>(element:HTMLElement,options?:{
         x?:number|string,
         y?:number|string,
+        size?:number,
+        dash?:LinkerLineDash,
         /**
          * @default "rect"
          */
         shape?:Shape,
-        color?:string,
         fillColor?:string,
-        size?:number,
-        dash?:LinkerLineDash,
-    }&LinkerLineAnchorOptions[Shape]):AreaAnchor;
+        /**
+         * @default line.color
+         */
+        strokeColor?:string,
+        
+    }&LinkerAnchorOptions[Shape]):AreaAnchor;
 
     static MouseHover(element:HTMLElement,options?:{
-        showEffectName?:EffectName,
-        animation?:LinkerLineAnimation,
         style?:Partial<CSSStyleDeclaration>,
+        animation?:LinkerLineAnimation,
         hoverStyle?:Partial<CSSStyleDeclaration>,
          /**
          * A function that is called on line did show/hide, with a mouse event argument
          */
         onToggle?(event:MouseEvent):void,
-        /**
-         * A function that is called on line did show/hide, with a mouse event argument
-         * @deprecated use onToggle instead
-         */
-        onSwitch?(event:MouseEvent):void,
     }):MouseHoverAnchor;
 }
 
-export interface PointAnchor extends LinkerLineEntity {}
-export interface AreaAnchor extends LinkerLineEntity {}
-export interface MouseHoverAnchor extends LinkerLineEntity {}
+export interface PointAnchor extends LinkerEntity {}
+export interface AreaAnchor extends LinkerEntity {}
+export interface MouseHoverAnchor extends LinkerEntity {}
 
-export type LinkerLineAnchorOptions={
+export type LinkerAnchorOptions={
     "rect":{
         /**
          * @default "110%"

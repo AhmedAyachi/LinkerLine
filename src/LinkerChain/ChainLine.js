@@ -26,15 +26,15 @@ export default class ChainLine extends LinkerLine {
     get removed(){ return undefined };
     
     hide(){ throw new Error("can't manually hide chain lines") };
-    #hide(...params){ super.hide("draw",...params) };
-    static hide(line,...params){
-        line.#hide(...params);
+    #hide(options){ super.hide("draw",options) };
+    static hide(line,options){
+        line.#hide(options);
     }
 
     show(){ throw new Error("can't manually show chain lines") };
-    #show(...params){ super.show("draw",...params) };
-    static show(line,...params){
-        line.#show(...params);
+    #show(options){ super.show("draw",options) };
+    static show(line,options){
+        line.#show(options);
     }
 
     remove(){ throw new Error("can't manually remove chain lines") };

@@ -9,14 +9,21 @@ export default class LinkerAnchor {
     }
 
     static Area(element,options){
-        return LeaderLine.areaAnchor(element,options);
+        if(options){
+            options.color=options.strokeColor;
+        }
+        const anchorEl=LeaderLine.areaAnchor(element,options);
+        console.log("anchorEl",anchorEl);
+        console.log("LeaderLine",LeaderLine.a);
+        return anchorEl;
     }
 
     static MouseHover(element,options){
         if(options){
-            const {onToggle}=options;
-            if(onToggle) options.onSwitch=onToggle;
-            options.animOptions=toLeaderLineAnimationOptions(options.animation);
+            const {animation}=options;
+            options.onSwitch=options.onToggle;
+            options.animOptions=toLeaderLineAnimationOptions(animation);
+            options.showEffectName=animation&&animation.effect;
         }
         return LeaderLine.mouseHoverAnchor(element,options);
     }

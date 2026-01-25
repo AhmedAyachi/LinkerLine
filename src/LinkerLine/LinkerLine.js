@@ -135,7 +135,6 @@ export default class LinkerLine extends LeaderLine {
     }
 
     static get plugs(){ return Object.keys(LeaderLine.plugs)};
-
     static get names(){ return Object.keys(LeaderLine.names)};
 }
 
