@@ -33,8 +33,7 @@ export default class LinkerAnchor {
             })();
         }
         const anchorData=LeaderLine.areaAnchor(element,options);
-        const anchorId=anchorData._id;
-        const anchor=LeaderLine.anchors[anchorId],{svg,conf}=anchor;
+        const anchor=LeaderLine.anchors[anchorData._id],{svg,conf}=anchor;
         conf.update=(()=>{
             const update=conf.update.bind(conf);
             return (...args)=>{

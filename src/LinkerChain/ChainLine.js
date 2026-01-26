@@ -22,8 +22,8 @@ export default class ChainLine extends LinkerLine {
         }});
     }
 
-    get standalone(){ return false };
     get removed(){ return undefined };
+    get standalone(){ return false };
     
     hide(){ throw new Error("can't manually hide chain lines") };
     #hide(options){ super.hide("draw",options) };

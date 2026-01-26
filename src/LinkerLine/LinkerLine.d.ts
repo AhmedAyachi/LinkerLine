@@ -42,10 +42,12 @@ export default class LinkerLine<StartType,EndType,Path extends LinkerLinePath="f
     position():void;
     /**
      * Shows the linkerline element
+     * @param effect default "none"
      */
     show(effect:LinkerLineAnimationEffect,options?:LinkerAnimationOptions):void;
     /**
      * Hides the linkerline element
+     * @param effect default "none"
      */
     hide(effect:LinkerLineAnimationEffect,options?:LinkerAnimationOptions):void;
     /**
@@ -53,20 +55,20 @@ export default class LinkerLine<StartType,EndType,Path extends LinkerLinePath="f
      */
     remove():void;
     /**
-     * Same as setOptions method of the old implementation
-     * @param props 
+     * Sets the line options.
      */
-    setOptions(props:LinkerLineOptions<StartType,EndType,Path>):void;
+    setOptions(options:LinkerLineOptions<StartType,EndType,Path>):void;
 
     /**
-     * positions all lines at once
+     * positions all lines at once.
      */
     static positionAll():void;
 
     /**
-     * removes all standalone lines at once
+     * removes all standalone lines at once.
+     * @param filter if specified, removes lines that satisfy the condition, all otherwise.
      */
-    static removeAll():void;
+    static removeAll(filter?:(line:LinkerLine<HTMLElement,HTMLElement>)=>boolean):void;
 
     static Label(text:string,options?:{
         /**

@@ -33,35 +33,38 @@ export default class LinkerLine extends LeaderLine {
     }
     
     #baseSize=super.size;
-    position(){if(!(this.#hidden||this.removed)){
-        super.position();
-        const {element}=this,parent=element.parentNode;
-        const parentRect=parent.getBoundingClientRect();
-        let translateX=parent.scrollLeft-parentRect.left-window.scrollX;
-        let translateY=parent.scrollTop-parentRect.top-window.scrollY;
-        if(statics.isSafari){
-            const startZoom=parseFloat(getComputedStyle(this.start).getPropertyValue("zoom"))||1;
-            element.style.zoom=startZoom;
-            translateX/=startZoom;
-            translateY/=startZoom;
-            super.setOptions({size:this.#baseSize/startZoom});
+    position(){
+        if(this.removed) throw RemovedLineError("position");
+        if(!this.#hidden){
+            super.position();
+            const {element}=this,parent=element.parentNode;
+            const parentRect=parent.getBoundingClientRect();
+            let translateX=parent.scrollLeft-parentRect.left-window.scrollX;
+            let translateY=parent.scrollTop-parentRect.top-window.scrollY;
+            if(statics.isSafari){
+                const startZoom=parseFloat(getComputedStyle(this.start).getPropertyValue("zoom"))||1;
+                element.style.zoom=startZoom;
+                translateX/=startZoom;
+                translateY/=startZoom;
+                super.setOptions({size:this.#baseSize/startZoom});
+            }
+            element.style.transform=`translate(${translateX}px,${translateY}px)`;       
         }
-        element.style.transform=`translate(${translateX}px,${translateY}px)`;       
-    }}
+    }
 
-    show(effectName,options){
-        if(this.removed) throw new Error("can't show a removed line");
+    show(effect="none",options){
+        if(this.removed) throw RemovedLineError("show");
         this.#hidden=false;
         toLeaderLineAnimationOptions(options);
-        super.show(effectName,options);
+        super.show(effect,options);
         this.position();
     }
 
-    hide(effectName,options){
-        if(this.removed) throw new Error("can't hide a removed line");
+    hide(effect="none",options){
+        if(this.removed) throw RemovedLineError("hide");
         this.#hidden=true;
         toLeaderLineAnimationOptions(options);
-        super.hide(effectName,options);
+        super.hide(effect,options);
     }
 
     remove(){if(!this.removed){
@@ -71,53 +74,43 @@ export default class LinkerLine extends LeaderLine {
     }}
 
     setOptions(options){
+        if(!(Object.getPrototypeOf(options)===Object.prototype)){
+            throw new Error("LinkerLine.setOptions expects a plain object as argument.");
+        }
         toLeaderLineDash(options.dash);
         super.setOptions(options);
         this.position();
     }
 
+    get id(){ return this._id};
+    get element(){ return this.#element };
     get standalone(){ return true };
 
-    get element(){ return this.#element};
+    get hidden(){ return this.#hidden };
+    get removed(){ return !statics.linemap[this.id] };
 
-    get id(){ return this._id};
+    get end(){ return super.end };
+    get start(){ return super.start };
 
-    get hidden(){ return this.#hidden};
-    get removed(){ return !statics.linemap[this.id]};
-
-    get start(){ return super.start};
-    get end(){ return super.end};
-
-    get size(){ return super.size};
-    get color(){ return super.color};
+    get size(){ return super.size };
+    get color(){ return super.color };
 
 
     static positionAll(){
         const {linemap}=statics;
         for(const lineId in linemap){
             const line=linemap[lineId];
-            line.start.isConnected&&line.end.isConnected&&line.position();
+            if(line.start.isConnected&&line.end.isConnected) line.position();
         }
     }
 
-    static removeAll(){
+    static removeAll(filter){
+        const targetingAll=typeof(filter)!=="function";
         const {linemap}=statics;
         for(const lineId in linemap){
             const line=linemap[lineId];
-            if(line.standalone) line.remove();
+            if(line.standalone&&(targetingAll||filter(line))) line.remove();
         }
-    }
-
-    static PointAnchor(){
-        throw new Error("[deprecated] use LinkerAnchor.Point export instead");
-    }
-
-    static AreaAnchor(){
-        throw new Error("[deprecated] use LinkerAnchor.Area export instead");
-    }
-
-    static MouseHoverAnchor(){
-        throw new Error("[deprecated] use LinkerAnchor.MouseHover export instead");
     }
 
     static Label(text,options){
@@ -136,6 +129,12 @@ export default class LinkerLine extends LeaderLine {
 
     static get plugs(){ return Object.keys(LeaderLine.plugs)};
     static get names(){ return Object.keys(LeaderLine.names)};
+    static areaAnchor(){ LinkerLine.AreaAnchor() };
+    static AreaAnchor(){ throw DeprecatedAnchorError("Area") };
+    static pointAnchor(){ LinkerLine.PointAnchor() };
+    static PointAnchor(){ throw DeprecatedAnchorError("Point") };
+    static mouseHoverAnchor(){ LinkerLine.MouseHoverAnchor() };
+    static MouseHoverAnchor(){ throw DeprecatedAnchorError("MouseHover") };
 }
 
 const statics={
@@ -154,3 +153,6 @@ const toLeaderLineDash=(dash)=>{
         delete dash.length;
     }
 }
+
+const RemovedLineError=(action)=>new Error(`"can't ${action} a removed line").`);
+const DeprecatedAnchorError=(name)=>new Error(`[Deprecated] use the LinkerAnchor.${name} export instead.`);
