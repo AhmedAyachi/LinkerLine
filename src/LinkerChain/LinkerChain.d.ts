@@ -6,6 +6,7 @@ export default class LinkerChain<Type,Path extends LinkerLinePath> {
 
     constructor(nodes:Type[],options?:LinkerChainOptions<Type,Path>);
 
+    readonly id:string;
     readonly nodes:LinkerChainNode<Type>[];
     readonly lines:ChainLine<Type,Type,Path>[];
     /**
@@ -65,10 +66,10 @@ export type LinkerChainOptions<Type,Path extends LinkerLinePath>={
 }
 
 type LinkerChainNode<Type>=Type&{
-    readonly inLine:LinkerLine<Type,Type>|undefined,
-    readonly outLine:LinkerLine<Type,Type>|undefined,
-    readonly inLines:LinkerLine<Type,Type>[];
-    readonly outLines:LinkerLine<Type,Type>[];
+    readonly inLine?:LinkerLine<Type,Type>,
+    readonly outLine?:LinkerLine<Type,Type>,
+    readonly inLines?:LinkerLine<Type,Type>[],
+    readonly outLines?:LinkerLine<Type,Type>[],
 }
 
 type LinkingOptions={
@@ -79,4 +80,6 @@ type ChainLine<StartType,EndType,Path extends LinkerLinePath>=Omit<
     LinkerLine<StartType,EndType,Path>,
     "hide"|"show"|
     "remove"|"removed"
->;
+>&{
+    readonly chainId:string,
+};

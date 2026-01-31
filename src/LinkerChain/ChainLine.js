@@ -2,8 +2,13 @@ import LinkerLine from "../LinkerLine/LinkerLine";
 
 
 export default class ChainLine extends LinkerLine {
+
+    #chainId;
+
     constructor(options){
         super(options);
+        this.#chainId=options.chainId;
+
         const {start,end}=this;
         if(!Array.isArray(end.inLines)) end.inLines=[];
         if(!Array.isArray(start.outLines)) start.outLines=[];
@@ -11,17 +16,17 @@ export default class ChainLine extends LinkerLine {
         end.inLines.push(this);
         start.outLines.push(this);
 
-        //TODO: check redefinition as it will throw an error.
-        Object.defineProperty(end,"inLine",{get:()=>{
+        if(!Object.hasOwn(end,"inLine")) Object.defineProperty(end,"inLine",{get:()=>{
             const {inLines}=end;
             return Array.isArray(inLines)?inLines.at(-1):null;
         }});
-        Object.defineProperty(start,"outLine",{get:()=>{
+        if(!Object.hasOwn(start,"outLine")) Object.defineProperty(start,"outLine",{get:()=>{
             const {outLines}=start;
             return Array.isArray(outLines)?outLines.at(-1):null;
         }});
     }
 
+    get chainId(){ return this.#chainId };
     get removed(){ return undefined };
     get standalone(){ return false };
     

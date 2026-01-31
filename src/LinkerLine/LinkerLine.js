@@ -8,12 +8,12 @@ export default class LinkerLine extends LeaderLine {
     #hidden=false;
 
     constructor(props){
-        props.ee=Math.max(Number(props.minGridLength),1)||40;
+        props.ee=Math.max(Number(props.minGridLength),1)||30;
         props.hide=Boolean(props.hidden);
         super(props);
         this.#hidden=props.hide;
         const {id}=this;
-        statics.linemap[id]=this;
+        statics.lineMap[id]=this;
         this.#element=LeaderLine.Se[id].svg;
         this.#element.style.willChange="left,top";
         const {parent=this.end.parentNode}=props;
@@ -68,7 +68,7 @@ export default class LinkerLine extends LeaderLine {
     }
 
     remove(){if(!this.removed){
-        delete statics.linemap[this.id];
+        delete statics.lineMap[this.id];
         document.body.appendChild(this.element);
         super.remove();
     }}
@@ -87,7 +87,7 @@ export default class LinkerLine extends LeaderLine {
     get standalone(){ return true };
 
     get hidden(){ return this.#hidden };
-    get removed(){ return !statics.linemap[this.id] };
+    get removed(){ return !statics.lineMap[this.id] };
 
     get end(){ return super.end };
     get start(){ return super.start };
@@ -97,18 +97,18 @@ export default class LinkerLine extends LeaderLine {
 
 
     static positionAll(){
-        const {linemap}=statics;
-        for(const lineId in linemap){
-            const line=linemap[lineId];
+        const {lineMap}=statics;
+        for(const lineId in lineMap){
+            const line=lineMap[lineId];
             if(line.start.isConnected&&line.end.isConnected) line.position();
         }
     }
 
     static removeAll(filter){
         const targetingAll=typeof(filter)!=="function";
-        const {linemap}=statics;
-        for(const lineId in linemap){
-            const line=linemap[lineId];
+        const {lineMap}=statics;
+        for(const lineId in lineMap){
+            const line=lineMap[lineId];
             if(line.standalone&&(targetingAll||filter(line))) line.remove();
         }
     }
@@ -138,7 +138,7 @@ export default class LinkerLine extends LeaderLine {
 }
 
 const statics={
-    linemap:{},
+    lineMap:{},
     isSafari:/^((?!chrome|android).)*safari/i.test(navigator.userAgent),
 }
 

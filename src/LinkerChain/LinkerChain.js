@@ -3,6 +3,7 @@ import ChainLine from "./ChainLine";
 
 export default class LinkerChain {
     
+    #id=Math.random().toString(36).substring(2);
     #nodes;
     #linkingDuration;
     #onfocusIndex=0;
@@ -18,18 +19,13 @@ export default class LinkerChain {
         this.#lineOptions=lineOptions;
         this.#onLinkChange=(typeof(onLinkChange)==="function")&&onLinkChange;
         this.#linkingDuration=Number(linkingDuration);
-        const linked=Boolean(options.linked);
+        const linked=Boolean(options?.linked);
         let i=-1;
         const maxLineIndex=nodes.length-2;
         this.#onfocusIndex=linked?(maxLineIndex+1):0;
         while(i<maxLineIndex){
             i++;
-            new ChainLine({
-                ...lineOptions,
-                start:nodes[i],
-                end:nodes[i+1],
-                hidden:!linked,
-            });
+            this.#renderLine(nodes[i],nodes[i+1],!linked);
         }
     }
 
@@ -46,7 +42,7 @@ export default class LinkerChain {
                     const maxIndex=Math.min(lastIndex,toIndex);
                     if(this.#onfocusIndex<maxIndex){
                         clearTimeout(this.#linkTimeout);
-                        const line=nodes[this.#onfocusIndex].outLine;
+                        const line=nodes[this.#onfocusIndex].outLines.find(it=>it.chainId===this.#id);
                         this.#onfocusIndex++;
                         ChainLine.show(line,{duration:this.#linkingDuration});
                         this.#linkTimeout=setTimeout(()=>{
@@ -80,7 +76,7 @@ export default class LinkerChain {
                 const hideLine=()=>{
                     if(this.#onfocusIndex>toIndex){
                         clearTimeout(this.#linkTimeout);
-                        const line=nodes[this.#onfocusIndex].inLine;
+                        const line=nodes[this.#onfocusIndex].inLines.find(it=>it.chainId===this.#id);
                         this.#onfocusIndex--;
                         ChainLine.hide(line,{duration:this.#linkingDuration});
                         this.#linkTimeout=setTimeout(()=>{
@@ -112,6 +108,7 @@ export default class LinkerChain {
         }
     }
 
+    get id(){ return this.#id };
     get nodes(){ return this.#destroyed?undefined:[...this.#nodes] };
     get linked(){
         if(this.#destroyed) return undefined;
@@ -148,11 +145,7 @@ export default class LinkerChain {
                     if(!nodes.includes(node)){
                         const end=nodes.at(0);
                         nodes.unshift(node);
-                        const line=new ChainLine({
-                            ...this.#lineOptions,
-                            start:node,end,
-                            hidden:true,
-                        });
+                        const line=this.#renderLine(node,end,true);
                         if(partiallyLinked){
                             this.#onfocusIndex++;
                             ChainLine.show(line,{duration:this.#linkingDuration});
@@ -180,11 +173,7 @@ export default class LinkerChain {
                     if(!nodes.includes(node)){
                         const start=nodes.at(-1);
                         nodes.push(node);
-                        new ChainLine({
-                            ...this.#lineOptions,
-                            start,end:node,
-                            hidden:true,
-                        });
+                        this.#renderLine(start,node,true);
                     }
                 } else throw new Error("LinkerLine chain node must be an HTMLElement");
             }
@@ -203,6 +192,14 @@ export default class LinkerChain {
         this.#onfocusIndex=null;
         this.#onLinkChange=null;
     }}
+
+    #renderLine(start,end,hidden){
+        return new ChainLine({
+            ...this.#lineOptions,
+            chainId:this.#id,
+            start,end,hidden,
+        });
+    }
 }
 
 const DestroyedChainError=(methodName)=>new Error(`calling ${methodName} on a destroyed chain.`);
