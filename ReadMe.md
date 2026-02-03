@@ -37,7 +37,17 @@ The original LeaderLine class lacks:
 |scroll positioning|If you create a line using the original class and then drag one of its connected elements (start/end) to the end of its parent's offset, causing the parent to become scrollable, the positioning of the line becomes incorrect|
 |absolute positioning|When you create a line and append it to a draggable element, making the draggable element the parent node of the line SVG element in the DOM, the positioning of the line becomes incorrect if you subsequently drag that element|
 
-This library tackles all the issues mentioned above and provides more  options and properties to the LeaderLine instance.
+This package tackles all the issues mentioned above and provides more  options and properties to the LeaderLine instance.
+
+## How to use it ?
+Just install the package using npm or any package manager of your choice :
+```
+npm install --save linkerline
+```
+And then use it in your code as follows : 
+```
+import {LinkerLine} from "linkerline";
+```
 
 ## LinkerLine
 
