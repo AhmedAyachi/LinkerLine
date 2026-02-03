@@ -35,7 +35,7 @@ export default class LinkerChain<Type,Path extends LinkerLinePath> {
      * links/unlinks nodes based on the chain current state
      * and the value of the toIndex option.
      */
-    relink(options?:LinkingOptions):void;
+    relink(options:LinkingOptions):void;
     /**
      * destroys the chain.
      */

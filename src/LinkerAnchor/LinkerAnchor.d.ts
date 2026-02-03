@@ -7,7 +7,7 @@ export default class LinkerAnchor {
         y?:number|string,
     }):PointAnchor;
 
-    static Area<Shape extends keyof LinkerAnchorOptions>(element:HTMLElement,options?:{
+    static Area<Shape extends keyof LinkerAnchorShapeOptions>(element:HTMLElement,options?:{
         x?:number|string,
         y?:number|string,
         dash?:LinkerLineDash,
@@ -22,7 +22,7 @@ export default class LinkerAnchor {
         strokeColor?:string,
         strokeWidth?:number,
         
-    }&LinkerAnchorOptions[Shape]):AreaAnchor;
+    }&LinkerAnchorShapeOptions[Shape]):AreaAnchor;
 
     static MouseHover(element:HTMLElement,options?:{
         style?:Partial<CSSStyleDeclaration>,
@@ -39,7 +39,7 @@ export interface PointAnchor extends LinkerEntity {}
 export interface AreaAnchor extends LinkerEntity {}
 export interface MouseHoverAnchor extends LinkerEntity {}
 
-export type LinkerAnchorOptions={
+export type LinkerAnchorShapeOptions={
     "rect":{
         /**
          * @default "110%"
