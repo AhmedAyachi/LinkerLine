@@ -8,6 +8,6 @@ export {default as LinkerChain} from "./LinkerChain/LinkerChain";
 export const toLeaderLineAnimationOptions=(options)=>{
     if(options&&(typeof(options)==="object")){
         options.timing=options.easing;
-        delete options.easing;
     };
+    return options;
 }

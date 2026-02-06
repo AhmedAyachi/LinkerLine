@@ -80,7 +80,7 @@ const line=new LinkerLine({
 |positionAll|() : void|updates all the lines'positions at once|
 
 ### removeAll
-The ***removeAll*** method takes a filter as argument and calls it once for each standalone line and remove those that meet the condition specified.
+The ***removeAll*** method takes a filter as argument and calls it once for each standalone line and removes those that meet the condition specified.
 ```
 //removes only red lines
 LinkerLine.removeAll(line=>line.color==="red");

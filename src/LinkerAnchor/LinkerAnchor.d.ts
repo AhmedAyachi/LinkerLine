@@ -1,4 +1,4 @@
-import {LinkerEntity,LinkerLineAnimation,LinkerLineDash} from "../LinkerLine/LinkerLine";
+import {LinkerEntity,LinkerLineAnimationEffect,LinkerLineAnimation,LinkerLineDash} from "../LinkerLine/LinkerLine";
 
 
 export default class LinkerAnchor {
@@ -26,10 +26,11 @@ export default class LinkerAnchor {
 
     static MouseHover(element:HTMLElement,options?:{
         style?:Partial<CSSStyleDeclaration>,
-        animation?:LinkerLineAnimation,
+        animation?:LinkerLineAnimation|LinkerLineAnimationEffect,
         hoverStyle?:Partial<CSSStyleDeclaration>,
          /**
-         * A function that is called on line did show/hide, with a mouse event argument
+         * A function that is called on line did show/hide
+         * with a mouse event argument
          */
         onToggle?(event:MouseEvent):void,
     }):MouseHoverAnchor;

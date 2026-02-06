@@ -13,9 +13,12 @@ export default class LinkerAnchor {
             const {animation}=options;
             options.onSwitch=options.onToggle;
             options.animOptions=toLeaderLineAnimationOptions(animation);
-            options.showEffectName=animation&&animation.effect;
-        }
-        return LeaderLine.mouseHoverAnchor(element,options);        
+            options.showEffectName=(()=>{
+                if(typeof(animation)==="string") return animation||"none";
+                else return (animation&&animation.effect)||"none";
+            })();
+        } else options={showEffectName:"none"};
+        return LeaderLine.mouseHoverAnchor(element,options);
     }
 
     static Area(element,options){
