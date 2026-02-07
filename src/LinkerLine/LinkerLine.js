@@ -16,7 +16,12 @@ export default class LinkerLine extends LeaderLine {
         statics.lineMap[id]=this;
         this.#element=LeaderLine.Se[id].svg;
         this.#element.style.willChange="left,top";
-        Object.defineProperty(this.#element,"lineId",{value:id});
+        Object.defineProperty(this.#element,"lineId",{
+            value:id,
+            writable:false,
+            enumerable:false,
+            configurable:false,
+        });
         const {parent=this.end.parentNode}=props;
         if(parent instanceof HTMLElement){
             if(getComputedStyle(parent).position==="static"){
@@ -28,10 +33,27 @@ export default class LinkerLine extends LeaderLine {
         }
     }
 
-    set dash(value){
-        toLeaderLineDash(value);
-        super.dash=value;
-    }
+    get id(){ return this._id};
+    get element(){ return this.#element };
+    get standalone(){ return true };
+
+    get hidden(){ return this.#hidden };
+    get removed(){ return !statics.lineMap[this.id] };
+
+    get end(){ return super.end };
+    get start(){ return super.start };
+
+    get size(){ return super.size };
+    get color(){ return super.color };
+    get dash(){ 
+        const dash=super.dash;
+        if(typeof(dash)==="object"){
+            dash.length=dash.len;
+            delete dash.len;
+            return dash; 
+        } 
+        else return dash;
+    };
     
     #baseSize=super.size;
     position(){
@@ -75,32 +97,16 @@ export default class LinkerLine extends LeaderLine {
     }}
 
     setOptions(options){
-        if(!(Object.getPrototypeOf(options)===Object.prototype)){
-            throw new Error("LinkerLine.setOptions expects a plain object as argument.");
-        }
-        toLeaderLineDash(options.dash);
-        super.setOptions(options);
-        this.position();
-    }
-
-    get id(){ return this._id};
-    get element(){ return this.#element };
-    get standalone(){ return true };
-
-    get hidden(){ return this.#hidden };
-    get removed(){ return !statics.lineMap[this.id] };
-
-    get end(){ return super.end };
-    get start(){ return super.start };
-
-    get size(){ return super.size };
-    get color(){ return super.color };
-
-
-    static findByElement(element){
-        const {lineId}=element;
-        const line=statics.lineMap[lineId];
-        return (line&&(line.element===element))?line:null;
+        if(Object.getPrototypeOf(options)===Object.prototype){
+            try {
+                options.dash=toLeaderLineDash(options.dash);
+                super.setOptions(options);
+                this.position();
+            } catch(error){
+                if(this.removed) throw RemovedLineError("setOptions");
+                else throw error;
+            }
+        } else throw new Error("LinkerLine.setOptions expects a plain object as argument.");
     }
 
     static positionAll(){
@@ -118,6 +124,12 @@ export default class LinkerLine extends LeaderLine {
             const line=lineMap[lineId];
             if(line.standalone&&(targetingAll||filter(line))) line.remove();
         }
+    }
+
+    static findByElement(element){
+        const {lineId}=element;
+        const line=statics.lineMap[lineId];
+        return (line&&(line.element===element))?line:null;
     }
 
     static Label(text,options){
@@ -157,9 +169,9 @@ const toLeaderLineDash=(dash)=>{
     if(dash&&(typeof(dash)==="object")){
         toLeaderLineAnimationOptions(dash.animation);
         dash.len=dash.length;
-        delete dash.length;
-    }
+        return dash;
+    } else return undefined;
 }
 
-const RemovedLineError=(action)=>new Error(`"can't ${action} a removed line").`);
+const RemovedLineError=(action)=>new Error(`can't call "${action}" on a removed line.`);
 const DeprecatedAnchorError=(name)=>new Error(`[Deprecated] use the LinkerAnchor.${name} export instead.`);

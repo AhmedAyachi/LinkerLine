@@ -27,6 +27,7 @@ export default class LinkerLine<StartType,EndType,Path extends LinkerLinePath="f
      * Gets the line size
     */
     readonly size:number;
+    readonly dash:LinkerLineDash;
     /**
      * Returns true if the line was instantiated directly using the LinkerLine class
      * @notice Returns false if the line is part of a chain linkers
@@ -57,7 +58,7 @@ export default class LinkerLine<StartType,EndType,Path extends LinkerLinePath="f
     /**
      * Sets the line options.
      */
-    setOptions(options:LinkerLineOptions<StartType,EndType,Path>):void;
+    setOptions(options:Partial<LinkerLineOptions<StartType,EndType,Path>>):void;
 
     /**
      * positions all lines at once.
