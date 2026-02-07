@@ -9,7 +9,7 @@ export default class LinkerLine<StartType,EndType,Path extends LinkerLinePath="f
     /**
      * The linkerline svg element
      */
-    readonly element:SVGElement;
+    readonly element:LinkerLineElement;
     readonly hidden:boolean;
     /**
      * Gets the line start element
@@ -70,6 +70,8 @@ export default class LinkerLine<StartType,EndType,Path extends LinkerLinePath="f
      */
     static removeAll(filter?:(line:LinkerLine<HTMLElement,HTMLElement>)=>boolean):void;
 
+    static findByElement(element:any):LinkerLine|null;
+
     static Label(text:string,options?:{
         /**
          * @default "path"
@@ -83,19 +85,10 @@ export default class LinkerLine<StartType,EndType,Path extends LinkerLinePath="f
          */
         outlineColor?:string,
     }):LinkerLineLabel;
+}
 
-    /**
-     * @deprecated use LinkerAnchor.Point
-     */
-    static PointAnchor():unknown;
-    /**
-     * @deprecated use LinkerAnchor.Area
-     */
-    static AreaAnchor():unknown;
-    /**
-     * @deprecated use LinkerAnchor.MouseHover
-     */
-    static MouseHoverAnchor():unknown;
+export interface LinkerLineElement extends SVGElement {
+    readonly lineId:number,
 }
 
 export type LinkerEntity={

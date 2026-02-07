@@ -16,6 +16,7 @@ export default class LinkerLine extends LeaderLine {
         statics.lineMap[id]=this;
         this.#element=LeaderLine.Se[id].svg;
         this.#element.style.willChange="left,top";
+        Object.defineProperty(this.#element,"lineId",{value:id});
         const {parent=this.end.parentNode}=props;
         if(parent instanceof HTMLElement){
             if(getComputedStyle(parent).position==="static"){
@@ -95,6 +96,12 @@ export default class LinkerLine extends LeaderLine {
     get size(){ return super.size };
     get color(){ return super.color };
 
+
+    static findByElement(element){
+        const {lineId}=element;
+        const line=statics.lineMap[lineId];
+        return (line&&(line.element===element))?line:null;
+    }
 
     static positionAll(){
         const {lineMap}=statics;
