@@ -143,9 +143,9 @@ export default class LinkerChain {
                 if(node instanceof HTMLElement){
                     const nodes=this.#nodes;
                     if(!nodes.includes(node)){
-                        const end=nodes.at(0);
+                        const endNode=nodes.at(0);
                         nodes.unshift(node);
-                        const line=this.#renderLine(node,end,true);
+                        const line=this.#renderLine(node,endNode,true);
                         if(partiallyLinked){
                             this.#onfocusIndex++;
                             ChainLine.show(line,{duration:this.#linkingDuration});
@@ -171,9 +171,9 @@ export default class LinkerChain {
                 if(node instanceof HTMLElement){
                     const nodes=this.#nodes;
                     if(!nodes.includes(node)){
-                        const start=nodes.at(-1);
+                        const startNode=nodes.at(-1);
                         nodes.push(node);
-                        this.#renderLine(start,node,true);
+                        this.#renderLine(startNode,node,true);
                     }
                 } else throw new Error("LinkerLine chain node must be an HTMLElement");
             }
@@ -193,11 +193,13 @@ export default class LinkerChain {
         this.#onLinkChange=null;
     }}
 
-    #renderLine(start,end,hidden){
+    #renderLine(startNode,endNode,hidden){
         return new ChainLine({
             ...this.#lineOptions,
             chainId:this.#id,
-            start,end,hidden,
+            start:startNode,
+            end:endNode,
+            hidden,
         });
     }
 }

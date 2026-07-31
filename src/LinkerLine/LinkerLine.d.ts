@@ -27,7 +27,41 @@ export default class LinkerLine<StartType,EndType,Path extends LinkerLinePath="f
      * Gets the line size
     */
     readonly size:number;
-    readonly dash:LinkerLineDash;
+    readonly dash:LinkerLineDash|null;
+    readonly path:LinkerLinePath;
+    readonly gradient:LinkerLineGradient|null;
+    readonly dropShadow:LinkerLineDropShadow|null;
+
+    readonly startLabel:string|LinkerLineLabel;
+    readonly middleLabel:string|LinkerLineLabel;
+    readonly endLabel:string|LinkerLineLabel;
+
+    readonly startPlug:LinkerLinePlug;
+    readonly startPlugName:string;
+    readonly startPlugSize:number;
+    readonly startPlugColor:string;
+    readonly startPlugOutline:LinkerLineOutline|null;
+    readonly startPlugOutlineSize:number;
+    readonly startPlugOutlineColor:string;
+
+    readonly endPlug:LinkerLinePlug;
+    readonly endPlugName:string;
+    readonly endPlugSize:number;
+    readonly endPlugColor:string;
+    readonly endPlugOutline:LinkerLineOutline|null;
+    readonly endPlugOutlineSize:number;
+    readonly endPlugOutlineColor:string;
+
+    readonly startSocket:LinkerLineSocket;
+    readonly startSocketGravity:LinkerLineSocketGravity;
+    
+    readonly endSocket:LinkerLineSocket;
+    readonly endSocketGravity:LinkerLineSocketGravity;
+
+    readonly outline:LinkerLineOutline|null;
+    readonly outlineSize:number;
+    readonly outlineColor:string;
+
     /**
      * Returns true if the line was instantiated directly using the LinkerLine class
      * @notice Returns false if the line is part of a chain linkers
@@ -71,7 +105,7 @@ export default class LinkerLine<StartType,EndType,Path extends LinkerLinePath="f
      */
     static removeAll(filter?:(line:LinkerLine<HTMLElement,HTMLElement>)=>boolean):void;
 
-    static findByElement(element:any):LinkerLine|null;
+    static findByElement(element:any):LinkerLine<HTMLElement,HTMLElement>|null;
 
     static Label(text:string,options?:{
         /**
@@ -134,92 +168,43 @@ export type LinkerLineOptions<StartType,EndType,Path extends LinkerLinePath="flu
      * @default "coral"
      */
     color?:string;
-    gradient?:boolean|{
-        startColor?:string,
-        endColor?:string,
-    };
-    dropShadow?:LinkerLineDropShadow;
+    gradient?:boolean|Partial<LinkerLineGradient>;
+    dropShadow?:boolean|LinkerLineDropShadow;
     /**
      * @default 4
      */
     size?:number;
-    outline?:boolean;
-    /**
-     * @default "indianred"
-     */
-    outlineColor?:string;
-    /**
-     * @default 0.25
-     */
-    outlineSize?:number;
+    outline?:boolean|Partial<LinkerLineOutline>;
     /**
      * @default "behind"
      */
-    startPlug?:LinkerLinePlug;
+    startPlug?:Partial<LinkerLinePlug>|LinkerLinePlugName;
     /**
      * @default "arrow1"
      */
-    endPlug?:LinkerLinePlug;
-    startPlugColor?:string;
-    endPlugColor?:string;
-    /**
-     * @default 1
-     */
-    startPlugSize?:number;
-    /**
-     * @default 1
-     */
-    endPlugSize?:number;
-    /**
-     * @default false
-     */
-    startPlugOutline?:boolean;
-    /**
-     * @default false
-     */
-    endPlugOutline?:boolean;
-    /**
-     * @default "auto"
-     */
-    startPlugOutlineColor?:string;
-    /**
-     * @default "auto"
-     */
-    endPlugOutlineColor?:string;
-    /**
-     * @default 1
-     */
-    startPlugOutlineSize?:number;
-    /**
-     * @default 1
-     */
-    endPlugOutlineSize?:number;
+    endPlug?:Partial<LinkerLinePlug>|LinkerLinePlugName;
     startLabel?:string;
     middleLabel?:string;
     endLabel?:string;
     captionLabel?:string;
     pathLabel?:string;
-    /**
-     * Sets the effect with specified Object that can have properties as the following options,
-     * or true to enable it with all default options
-     */
     dash?:boolean|LinkerLineDash;
     /**
      * @default "auto"
      */
-    startSocket?:LinkerLineSocket;
+    startSocket?:Partial<LinkerLineSocket>;
     /**
      * @default "auto"
      */
-    endSocket?:LinkerLineSocket;
+    endSocket?:Partial<LinkerLineSocket>;
     /**
      * If "auto" is specified, it is adjusted to gravity suitable for current path option automatically.
-     * @default "auto"
+     * @default -1
      */
     startSocketGravity?:LinkerLineSocketGravity;
     /**
      * If "auto" is specified, it is adjusted to gravity suitable for current path option automatically.
-     * @default "auto"
+     * @default -1
      */
     endSocketGravity?:LinkerLineSocketGravity;
 }
@@ -237,16 +222,41 @@ export type LinkerLineAnimation=LinkerAnimationOptions&{
 }
 
 export type LinkerLinePath=keyof PathPropsMap;
-export type LinkerLineSocket="auto"|"top"|"right"|"bottom"|"left";
-export type LinkerLineSocketGravity="auto"|number|number[];
-export type LinkerLinePlug="disc"|"square"|"arrow1"|"arrow2"|"arrow3"|"hand"|"crosshair"|"behind"|String;
-export type LinkerLineDash=boolean|{
+
+export type LinkerLineSocketGravity=number|number[];
+export type LinkerLineSocket={
+    side:"auto"|"top"|"right"|"bottom"|"left",
+    gravity:"auto"|LinkerLineSocketGravity,
+};
+
+
+export type LinkerLineDash={
     length?:"auto"|number,
     gap?:"auto"|number,
     animation?:boolean|LinkerAnimationOptions,
 };
 
-export type LinkerLineDropShadow=boolean|{
+export type LinkerLinePlugName="disc"|"square"|"arrow1"|"arrow2"|"arrow3"|"hand"|"crosshair"|"behind"|(string&never);
+export type LinkerLinePlug={
+    name:LinkerLinePlugName,
+    size:number,
+    color:string,
+    /**
+     * @default false
+     */
+    outline:Partial<LinkerLineOutline>|null,
+}
+export type LinkerLineOutline={
+    /**
+     * @default "indianred"
+     */
+    color:string,
+    /**
+     * @default 0.25
+     */
+    size:number,
+}
+export type LinkerLineDropShadow={
     /**
      * @default 2
      */
@@ -267,4 +277,9 @@ export type LinkerLineDropShadow=boolean|{
      * @default 0.8
      */
     opacity?:number,
+}
+
+export type LinkerLineGradient={
+    startColor:string,
+    endColor:string,
 }
