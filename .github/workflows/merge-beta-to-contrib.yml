@@ -1,0 +1,25 @@
+name: Merge Beta to Contrib
+on:
+    push:
+        branches: 
+            - beta
+jobs:
+    merge:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository 
+              uses: actions/checkout@v4
+              with:
+                fetch-depth: 0
+                token: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Set up Git user
+              run: |
+                git config --global user.name "github-actions[bot]"
+                git config --global user.email "github-actions[bot]@://github.com"
+
+            - name: Merge beta into contrib
+              run: |
+                git checkout contrib
+                git merge origin/beta --no-ff -m "chore: automatic merge of beta into contrib"
+                git push origin contrib
