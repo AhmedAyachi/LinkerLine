@@ -31,19 +31,25 @@ export default class LinkerLine extends LeaderLine {
         toLeaderLineDash(value);
         super.dash=value;
     }
-
-    position(){
-        if(!(this.#hidden||this.removed)){
-            super.position();
-            const {element}=this,parent=element.parentNode;
-            const {left,top}=parent.getBoundingClientRect();
-            const translateX=parent.scrollLeft-left-window.scrollX;
-            const translateY=parent.scrollTop-top-window.scrollY;
-            element.style.transform=`translate(${translateX}px,${translateY}px)`;       
+    #cachedSize=super.size;
+    position(){if(!(this.#hidden||this.removed)){
+        super.position();
+        const {element}=this,parent=element.parentNode;
+        const parentRect=parent.getBoundingClientRect();
+        let translateX=parent.scrollLeft-parentRect.left-window.scrollX;
+        let translateY=parent.scrollTop-parentRect.top-window.scrollY;
+        if(statics.isSafari){
+            const startZoom=parseFloat(getComputedStyle(this.start).getPropertyValue("zoom"))||1;
+            element.style.zoom=startZoom;
+            translateX/=startZoom;
+            translateY/=startZoom;
+            super.setOptions({size:this.#cachedSize/startZoom});
         }
-    }
+        element.style.transform=`translate(${translateX}px,${translateY}px)`;       
+    }}
 
     show(effectName,options){
+        if(this.removed) throw new Error("can't show a removed line");
         this.#hidden=false;
         toLeaderLineAnimationOptions(options);
         super.show(effectName,options);
@@ -51,18 +57,17 @@ export default class LinkerLine extends LeaderLine {
     }
 
     hide(effectName,options){
+        if(this.removed) throw new Error("can't hide a removed line");
         this.#hidden=true;
         toLeaderLineAnimationOptions(options);
         super.hide(effectName,options);
     }
 
-    remove(){
-        if(!this.removed){
-            delete statics.linemap[this.id];
-            document.body.appendChild(this.element);
-            super.remove();
-        }
-    }
+    remove(){if(!this.removed){
+        delete statics.linemap[this.id];
+        document.body.appendChild(this.element);
+        super.remove();
+    }}
 
     setOptions(options){
         toLeaderLineDash(options.dash);
@@ -70,25 +75,20 @@ export default class LinkerLine extends LeaderLine {
         this.position();
     }
 
-    get standalone(){
-        return !LinkerLineChain.getLineChain(this);
-    }
+    get standalone(){ return !LinkerLineChain.getLineChain(this)};
 
-    get element(){return this.#element};
+    get element(){ return this.#element};
 
-    get id(){return this._id};
+    get id(){ return this._id};
 
-    get hidden(){return this.#hidden};
-    get removed(){
-        return !statics.linemap[this.id];
-    }
+    get hidden(){ return this.#hidden};
+    get removed(){ return !statics.linemap[this.id]};
 
-    get start(){return super.start};
-    get end(){return super.end};
+    get start(){ return super.start};
+    get end(){ return super.end};
 
-    get color(){return super.color};
-    get size(){return super.size};
-
+    get size(){ return super.size};
+    get color(){ return super.color};
 
     static definePlug(options){
         definePlug(options);
@@ -141,9 +141,9 @@ export default class LinkerLine extends LeaderLine {
         
     }
 
-    static get plugs(){return Object.keys(LeaderLine.plugs)};
+    static get plugs(){ return Object.keys(LeaderLine.plugs)};
 
-    static get names(){return Object.keys(LeaderLine.names)};
+    static get names(){ return Object.keys(LeaderLine.names)};
 
     static Chain=LinkerLineChain;
     static getLineChain=LinkerLineChain.getLineChain;
@@ -151,6 +151,7 @@ export default class LinkerLine extends LeaderLine {
 
 const statics={
     linemap:{},
+    isSafari:/^((?!chrome|android).)*safari/i.test(navigator.userAgent),
 }
 
 window.addEventListener("resize",()=>{
