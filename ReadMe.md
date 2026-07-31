@@ -1,72 +1,172 @@
-# CONTRIBUTING
+## What is this ?
+This project is an extension to the original leader-line project https://github.com/anseki/leader-line v1.0.7.
 
-When contributing to this repository, please :
- - discuss the changes you wish to make first via [issues](https://github.com/AhmedAyachi/LinkerLine/issues).
-- stay active when working on a certain issue.
+<a href="https://www.buymeacoffee.com/ahmedayachi" target="_blank">
+  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="50" width="210">
+</a>
 
-## Conventions To Follow
+## Why using it ?
+The original LeaderLine class lacks:
+|Feature|Description|
+|--|--|
+|parent option|The original leaderline class always inserts the line svg element in body. In some cases, inserting the line in a specific element is required.|
+|element property|The LeaderLine instance lacks the element property, that points to the line's svg element in the DOM|
+|scroll positioning|If you create a line using the original class and then drag one of its connected elements (start/end) to the end of its parent's offset, causing the parent to become scrollable, the positioning of the line becomes incorrect|
+|absolute positioning|When you create a line and append it to a draggable element, making the draggable element the parent node of the line SVG element in the DOM, the positioning of the line becomes incorrect if you subsequently drag that element|
 
-When you are working with git, please be sure to follow the conventions below on your pull requests, branches and commits:
+## What's new ?
+This library tackles all the issues mentioned above and provides more  options and properties to the LeaderLine instance :
+|New Options|Description|
+|--|--|
+|parent|where to insert the line element, default to document.body in **<1.2.0** and to the line's end element parentNode in **>=1.2.0** |
+|minGridLength|The minimun line length (default to ***30***). Only applied to grid-pathed lines **[>=1.6.0]**|
+
+|New Properties|Type|Description|
+|--------------|----|-----------|
+|element|SVG Element|The line svg element|
+|removed|boolean|Indicates whether the line was removed (line.remove was called) or not [>=1.5.0]
+|standalone|boolean|Indicates whether the line is directly instantiated or not (ex: belongs to a LinkerLineChain instance) [>=1.5.0]|
+
+Changes :
+ 1. pointAnchor, areaAnchor, mouseHoverAnchor are renamed to PointAnchor, AreaAnchor, MouseHoverAnchor.
+ 2. CaptionLabel and PathLabel are merged into Label. The Label has an option named "on" that takes as a value either "path" or "element".
+ 3. MouseHoverAnchor onSwitch is renamed to onToggle [>=1.2.1]
+ 4. animation object "timing" property is renamed to "easing".
+ 5. dash "len" property is renamed to "length".
+ 
+## Illustration
+![Illustration](https://raw.githubusercontent.com/AhmedAyachi/RepoIllustrations/main/LinkerLine/Illustration.gif)
+
+Check [source code](https://github.com/AhmedAyachi/VritraExamples).
+
+## How to use it ?
+Just install the package using npm or any package manager of your choice :
+
+    npm install --save linkerline
+
+And then use it in your code as follows : 
+	
+	import LinkerLine from "linkerline";
+	
+    const line=new LinkerLine({
+	    //...OriginalClassProps,
+	    parent:HTMLElement,// this is the new parent option
+	    start:HTMLElement,
+	    end:HTMLElement,
+    });
+	//line.element => returns the line svg element
+
+## Version 1.5.0 add-ons
+|Static Method Name|Return Value|Description|
+|-----------|------------|-----------|
+|removeAll()|void|removes all standalone lines at once|
+|getLineChain(line:LinkerLine)|LinkerLineChain \| null|returns the LinkerLineChain instance the line belongs to if any|
+
+
+## LinkerLine Chain [1.3.0]
+![ChainIllustration.gif](https://raw.githubusercontent.com/AhmedAyachi/RepoIllustrations/main/LinkerLine/ChainIllustration.gif)
+
 ```
-PR: #[ISSUE ID] PR Title
-Branch: [ISSUE ID]-pr-title
-Last Commit before PR: [ACTION]: changes made
+new LinKerLine.Chain(nodes,options):LinkerLineChain;
 ```
-Example:
+|Param Name|Type|Description|
+|----------|----|-----------|
+|nodes|HTMLElement[]|The chain nodes|
+|options|object|The chain options|
+
+### Chain Options :
+|Option Name|Type|Description|
+|-----------|----|-----------|
+|linkingDuration|number|The line draw animation duration, default to 500|
+|linked|boolean|specifies if the chain is initially linked or not, default to false|
+|lineOptions|LinkerLineOptions|The line options|
+|onLinkChange|(context : object) : void|Called on each node-to-node connection change|
+
+### onLinkChange Context :
+|Property Name|Type|Description|
+|-------------|----|-----------|
+|line|LinkerLine|The connection line|
+|startNode|HTMLElement|Same as line.start|
+|endNode|HTMLElement|Same as line.end|
+|nodesLinked|boolean|Indicates whether the nodes are linked or unlinked|
+|hopIndex|number|The hop index [>=1.4.0]|
+
+### LinkerLineChain:
+|Name|Type|Description|
+|-------|-----|-------|
+|nodes|HTMLElement[]|gets the chain target nodes|
+|lines|LinkerLine[]|gets the chain lines|
+|linked|boolean|true if all nodes are fully linked, false otherwise|
+|partiallyLinked|boolean|true if at least one line is visible, false otherwise|
+|link|() : void|links the chain nodes|
+|unlink|() : void|unlinks the chain nodes|
+|pushNode|(node:HTMLElement) : void|appends a new node to the end of the chain|
+|unshiftNode|(node:HTMLElement) : void|adds a new node at the start of the chain
+
+**Additional properties are added to nodes:**
+|Property Name|Type|Description|
+|-------------|----|-----------|
+|outLine|LinkerLine \| undefined|The linkerline instance exiting the node|
+|inLine|LinkerLine \| undefined|The linkerline instance entering the node|
+
+### Illustration code :
 ```
-PR: #7 Fix Something
-Branch: 7-fix-something (you can make it shorter if it's too long)
-Commit: fix: fixing some bug in some component
+const chain=new LinkerLine.Chain(nodes,{
+    onLinkChange:({line,startNode,endNode,nodesLinked})=>{
+        const color=nodesLinked?line.color:null;
+        startNode.style.backgroundColor=color;
+        endNode.style.backgroundColor=color;
+    },
+});
+linkbtn.onclick=()=>{
+    chain.link();
+};
+unlinkbtn.onclick=()=>{
+    chain.unlink();
+}
 ```
-## Installation
-To start contributing to the project, follow these steps:
 
-1. Fork this repo
-2. Clone your fork	
-    ```
-    git clone https://github.com/<YOUR_GITHUB_ACCOUNT_NAME>/LinkerLine
-    ```
-3. Navigate to the project folder
-    ```
-    cd LinkerLine
-    ```
-5. Install the project dependencies with:
-    ```
-    npm install --save
-    ```
-6. Set the original repo as an upstream remote with:
-    ```
-    git remote add upstream https://github.com/AhmedAyachi/LinkerLine
-    ```
-7. Create a branch conforming to the naming above.
-8. Start editing your local branch and testing your code.
+## positionAll [1.2.0]
+A new static method ***LinkerLine.positionAll() : void*** that updates all the lines'positions at once.
 
-## Branching Philosophy
-```mermaid
-graph RL
-	C((contrib))-->B((beta))
-	P(PRs)-->C
-	D((dev))-->B
-	C-->D
-	B-->M((master))
-	B-->C
-```
-- master : a release branch.
-- beta : a pre-release branch that makes sure that the code merged from ***dev*** and ***contrib*** is coherent and stable enough.
-- dev : development branch.
-- contrib : PRs branch that makes sure that all PRs are coherent with each other and with the latest code.
+## Custom Plugs [1.1.0]
+It allows defining custom plugs via the static method LinkerLine.**definePlug( options : *object* )**.
+|Option Name|Type|Description|
+|-----------|----|-----------|
+|name|string (required)|plug name|
+|shape|enum "rect","ellipse"|defines a plug via a shape|
+|svg|string \| (color:string,weight:string)=>string|defines a plug via an svg string|
+|src|string|defines a plug via an url or base64 string|
+|width|number|sets the plug base width|
+|height|number|sets the plug base height|
+|margin|number|margin between the plug and the start/end element|
+|rotatable|boolean|indicates whether the plug should have a fixed orientation or rotate accordingly|
 
-## Notes
-- PRs without an issue or with no issue reference in the title will be rejected.
-- PRs targeting any branch other than the ***contrib*** branch will be rejected.
-- Make sure to pull the latest version of the upstearm/contrib branch before you submit a PR.
-    ```
-    /* Update your contrib */
-	git checkout contrib
-	git pull upstream contrib
-	```
-- Make sure you code works as expected before submitting a PR.
+    LinkerLine.definePlug({
+        name:"star",
+	    svg:(color,weight)=>`
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="${color}" stroke-width="${weight}" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z"/>
+            </svg>
+        `,
+        width:20,
+        height:20,
+        rotatable:false,
+    });
 
-> A lot of things to consider and it's easy to miss some steps so if it was your first time and your PR was rejected because there was no issue associated with it, simply create the issue and submit a new PR. 
+	const line=new LinkerLine({
+	    parent:linkerlineview,
+        color:"#73f5fa",
+        size:3,
+        startPlug:"star",
+        endPlug:"star",
+	});
 
-### Thanks for your intention to contribute.
+For svgs, when a function is specified, the **color** and the **weight**  params will respectively make sure that the plug will match the line color (or start/endPlugColor if specified) and thickness.
+
+##
+Thanks for the coffee ☕️, I might buy you a beer 🍺 some day.
+
+<a href="https://www.buymeacoffee.com/ahmedayachi" target="_blank">
+  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="50" width="210">
+</a>
