@@ -61,9 +61,6 @@ graph RL
 - PRs targeting any branch other than the ***contrib*** branch will be rejected.
 - Make sure to pull the latest version of the upstearm/contrib branch before you submit a PR.
     ```
-    /* add remote */
-    git remote add upstream https://github.com/AhmedAyachi/vritra-plugin-common
-    
     /* Update your contrib */
 	git checkout contrib
 	git pull upstream contrib
