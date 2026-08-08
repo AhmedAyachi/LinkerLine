@@ -16,7 +16,6 @@ export default class LinkerLine extends LeaderLine {
         const {id}=this;
         statics.lineMap[id]=this;
         this.#element=LeaderLine.Se[id].svg;
-        this.#element.style.willChange="left,top";
         Object.defineProperty(this.#element,"lineId",{
             value:id,
             writable:false,
@@ -50,14 +49,15 @@ export default class LinkerLine extends LeaderLine {
             const parentRect=parent.getBoundingClientRect();
             let translateX=parent.scrollLeft-parentRect.left-window.scrollX;
             let translateY=parent.scrollTop-parentRect.top-window.scrollY;
+            const elementStyle=element.style;
             if(statics.isSafari){
                 const startZoom=parseFloat(getComputedStyle(this.start).getPropertyValue("zoom"))||1;
-                element.style.zoom=startZoom;
+                elementStyle.zoom=startZoom;
                 translateX/=startZoom;
                 translateY/=startZoom;
                 super.setOptions({size:this.#baseSize/startZoom});
             }
-            element.style.transform=`translate(${translateX}px,${translateY}px)`;    
+            elementStyle.transform=`translate(${translateX}px,${translateY}px)`;
         }
     }
 
