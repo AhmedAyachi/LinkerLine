@@ -47,17 +47,9 @@ export default class LinkerLine extends LeaderLine {
             super.position();
             const {element}=this,parent=element.parentNode;
             const parentRect=parent.getBoundingClientRect();
-            let translateX=parent.scrollLeft-parentRect.left-window.scrollX;
-            let translateY=parent.scrollTop-parentRect.top-window.scrollY;
-            const elementStyle=element.style;
-            if(statics.isSafari){
-                const startZoom=parseFloat(getComputedStyle(this.start).getPropertyValue("zoom"))||1;
-                elementStyle.zoom=startZoom;
-                translateX/=startZoom;
-                translateY/=startZoom;
-                super.setOptions({size:this.#baseSize/startZoom});
-            }
-            elementStyle.transform=`translate(${translateX}px,${translateY}px)`;
+            const translateX=parent.scrollLeft-parentRect.left-window.scrollX;
+            const translateY=parent.scrollTop-parentRect.top-window.scrollY;
+            element.style.transform=`translate(${translateX}px,${translateY}px)`;
         }
     }
 
@@ -266,7 +258,6 @@ export default class LinkerLine extends LeaderLine {
 
 const statics={
     lineMap:{},
-    isSafari:/^((?!chrome|android).)*safari/i.test(navigator.userAgent),
     get defaultLineDropShadow(){
         return {
             dx:2,
