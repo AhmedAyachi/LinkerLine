@@ -113,16 +113,19 @@ export default class LinkerLine extends LeaderLine {
     static Label(text,options){
         const {on="path"}=options||{};
         if(options){
-            const {offset}=options;
-            if(typeof(offset)==="number"){
-                options.offset=[offset,offset];
-            }
-            if(!options.outlineColor){options.outlineColor="transparent"};
+            const {offset,fontSize}=options;
+            if(typeof(offset)==="number") options.offset=[offset,offset];
+            /**
+             * added because numbers do not work on firefox. 
+             */
+            if(typeof(fontSize)==="number") options.fontSize=`${fontSize}px`;
+            if(!options.outlineColor) options.outlineColor="transparent";
         }
         const LeaderLineEntity=LeaderLine[on==="path"?"pathLabel":"captionLabel"];
         return LeaderLineEntity(text,options);
-        
     }
+    static pathLabel(){ throw DeprecatedLabelError("path") };
+    static captionLabel(){ throw DeprecatedLabelError("element") };
 
     static get plugs(){ return Object.keys(LeaderLine.plugs)};
     static get names(){ return Object.keys(LeaderLine.names)};
@@ -280,6 +283,7 @@ window.addEventListener("resize",()=>{
 },false);
 
 const RemovedLineError=(action)=>new Error(`can't call "${action}" on a removed line.`);
+const DeprecatedLabelError=(type)=>new Error(`[Deprecated] use LinkerLine.Label and pass${type?` "${type}" as`:""} an "on" option.`);
 const DeprecatedAnchorError=(name)=>new Error(`[Deprecated] use the LinkerAnchor.${name} export instead.`);
 
 const toLeaderLineOptions=(options)=>{

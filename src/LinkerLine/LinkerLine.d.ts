@@ -114,6 +114,7 @@ export default class LinkerLine<StartType,EndType,Path extends LinkerLinePath="f
         on?:"path"|"element",
         color?:string,
         offset?:number|number[],
+        fontSize?:number|string,
         lineOffset?:number,
         /**
          * @default "transparent"
