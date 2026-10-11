@@ -1,4 +1,4 @@
-name: Merge Beta to Contrib
+name: Merge Beta into Contrib
 on:
     push:
         branches: 

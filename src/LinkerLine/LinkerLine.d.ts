@@ -1,3 +1,4 @@
+import {LinkerLabelOptions} from "../LinkerLabel/LinkerLabel";
 
 
 export default class LinkerLine<StartType,EndType,Path extends LinkerLinePath="fluid"> {
@@ -106,21 +107,6 @@ export default class LinkerLine<StartType,EndType,Path extends LinkerLinePath="f
     static removeAll(filter?:(line:LinkerLine<HTMLElement,HTMLElement>)=>boolean):void;
 
     static findByElement(element:any):LinkerLine<HTMLElement,HTMLElement>|null;
-
-    static Label(text:string,options?:{
-        /**
-         * @default "path"
-         */
-        on?:"path"|"element",
-        color?:string,
-        offset?:number|number[],
-        fontSize?:number|string,
-        lineOffset?:number,
-        /**
-         * @default "transparent"
-         */
-        outlineColor?:string,
-    }):LinkerLineLabel;
 }
 
 export interface LinkerLineElement extends SVGElement {
@@ -184,9 +170,9 @@ export type LinkerLineOptions<StartType,EndType,Path extends LinkerLinePath="flu
      * @default "arrow1"
      */
     endPlug?:Partial<LinkerLinePlug>|LinkerLinePlugName;
-    startLabel?:string;
-    middleLabel?:string;
-    endLabel?:string;
+    endLabel?:LinkerLineLabelOption;
+    startLabel?:LinkerLineLabelOption;
+    middleLabel?:LinkerLineLabelOption;
     captionLabel?:string;
     pathLabel?:string;
     dash?:boolean|LinkerLineDash;
@@ -209,6 +195,12 @@ export type LinkerLineOptions<StartType,EndType,Path extends LinkerLinePath="flu
      */
     endSocketGravity?:LinkerLineSocketGravity;
 }
+
+export type LinkerLineLabelOption=string|Omit<LinkerLineLabel,keyof LinkerLineLabel>|LinkerLabelOptions&{
+    text:string,
+};
+
+
 
 export type LinkerAnimationOptions={
     /**

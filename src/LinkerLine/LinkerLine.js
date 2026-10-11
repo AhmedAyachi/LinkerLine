@@ -1,6 +1,5 @@
 import LeaderLine from "../LeaderLine";
-import {toLeaderLineAnimationOptions} from "../index";
-import {setLinePlugStyle} from "../LinkerPlug/DefinePlug";
+import {toLeaderLineAnimationOptions,LinkerLabel} from "../index";
 
 
 export default class LinkerLine extends LeaderLine { 
@@ -40,7 +39,6 @@ export default class LinkerLine extends LeaderLine {
     get hidden(){ return this.#hidden };
     get removed(){ return !statics.lineMap[this.id] };
     
-    #baseSize=super.size;
     position(){
         if(this.removed) throw RemovedLineError("position");
         if(!this.#hidden){
@@ -110,20 +108,7 @@ export default class LinkerLine extends LeaderLine {
         return (line&&(line.element===element))?line:null;
     }
 
-    static Label(text,options){
-        const {on="path"}=options||{};
-        if(options){
-            const {offset,fontSize}=options;
-            if(typeof(offset)==="number") options.offset=[offset,offset];
-            /**
-             * added because numbers do not work on firefox. 
-             */
-            if(typeof(fontSize)==="number") options.fontSize=`${fontSize}px`;
-            if(!options.outlineColor) options.outlineColor="transparent";
-        }
-        const LeaderLineEntity=LeaderLine[on==="path"?"pathLabel":"captionLabel"];
-        return LeaderLineEntity(text,options);
-    }
+    static Label(){ throw DeprecatedLabelError() };
     static pathLabel(){ throw DeprecatedLabelError("path") };
     static captionLabel(){ throw DeprecatedLabelError("element") };
 
@@ -283,12 +268,29 @@ window.addEventListener("resize",()=>{
 },false);
 
 const RemovedLineError=(action)=>new Error(`can't call "${action}" on a removed line.`);
-const DeprecatedLabelError=(type)=>new Error(`[Deprecated] use LinkerLine.Label and pass${type?` "${type}" as`:""} an "on" option.`);
+const DeprecatedLabelError=(type)=>new Error(`[Deprecated] use the LinkerLabel export and pass${type?` "${type}" as`:""} an "on" option.`);
 const DeprecatedAnchorError=(name)=>new Error(`[Deprecated] use the LinkerAnchor.${name} export instead.`);
+
+const setLinePlugStyle=(linkerline)=>{
+    const {element}=linkerline,{plugs}=LeaderLine;
+    [linkerline.startPlug,linkerline.endPlug].forEach((plugname,i)=>{
+        const definition=plugs[plugname];
+        if(definition?.withsvg){
+            const useEl=element.querySelector(`[id$=plug-marker-${i}] use[href]`);
+            if(useEl){
+                useEl.style.stroke=useEl.style.fill||linkerline[(i?"end":"start")+"PlugColor"]||linkerline.color||"black";
+                useEl.style.strokeWidth=(linkerline.size||4)/2;
+            }
+        }
+    });
+}
 
 const toLeaderLineOptions=(options)=>{
     setLeaderLinePlug("endPlug",options);
     setLeaderLinePlug("startPlug",options);
+    toLeaderLineLabel("endLabel",options);
+    toLeaderLineLabel("startLabel",options);
+    toLeaderLineLabel("middleLabel",options);
     setLeaderLineSocket("endSocket",options);
     setLeaderLineSocket("startSocket",options);
     setLeaderLineOutline(options);
@@ -304,6 +306,23 @@ const setLeaderLineSocket=(key,options)=>{
         else delete options[gravityKey];
     }
     else return socket;
+}
+
+const toLeaderLineLabel=(key,options)=>{
+    const option=options[key];
+    if(option){
+        if((Object.getPrototypeOf(option)===Object.prototype)){
+            options[key]=new LinkerLabel(option.text,option);
+        }
+        else if(typeof(option)==="string"){
+            options[key]=new LinkerLabel(option,{
+                style:{
+                    color:"black",
+                    fontSize:15,
+                },
+            });
+        }
+    }
 }
 
 const toLeaderLineDash=(dash)=>{

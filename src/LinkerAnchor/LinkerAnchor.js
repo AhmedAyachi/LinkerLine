@@ -28,9 +28,8 @@ export default class LinkerAnchor {
             options.shape=(()=>{
                 const {shape}=options;
                 switch(shape){
-                    case "circle": 
-                        throw new Error(`"circle" shape deprecated, use "ellipse" instead`);
                     case "ellipse": return "circle";
+                    case "circle": throw new Error(`"circle" shape deprecated, use "ellipse" instead`);
                     default: return shape;
                 };
             })();
@@ -43,7 +42,7 @@ export default class LinkerAnchor {
                 update(...args);
                 const {bBoxRel}=anchor.curStats;
                 ["left","top"].forEach(side=>{ 
-                    svg.style[side]=bBoxRel[side];
+                    svg.style[side]=bBoxRel[side]+"px";
                 });
             };
         })();

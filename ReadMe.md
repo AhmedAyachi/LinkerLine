@@ -12,21 +12,32 @@ LinkerLine v2 introduces a new API. Instead of a single default export, the pack
 |--|--|
 |LinkerLine|instantiates new standalone lines|
 |LinkerChain|instantiates new chains|
+|LinkerLabel|instantiates new labels|
 |LinkerAnchor|for anything related to anchors|
 |LinkerPlug|for anything related to plugs|
 
 These API changes aim to facilitate maintainability and extensibility.
-For an API similar to LeaderLine's, you can still use version 1.x.x, but the latter will no longer receive updates nor fixes.
+For an API similar to LeaderLine's, you can still use version 1.6, but the latter will no longer receive updates nor fixes.
 
 API Changes :
  1. **PointAnchor**,  **AreaAnchor** and **MouseHoverAnchor** are moved to the **LinkerAnchor** export.
  2. **CaptionLabel** and **PathLabel** are merged into **Label**. The Label has an option named ***on*** that takes as a value either ***path*** or ***element***.
  3. MouseHoverAnchor ***onSwitch*** option is renamed to ***onToggle***.
  4. animation object ***timing*** property is renamed to ***easing***.
- 5. dash ***len*** property is renamed to ***length***.
- 6. Anchors ***size*** option is renamed to ***strokeWidth***.
- 7. AreaAnchor ***circle*** shape  is renamed to ***ellipse***.
- 8. AreaAnchor ***color*** option is renamed to ***strokeColor***.
+ 5. Line's ***hide*** option is renamed to ***hidden***.
+ 6. dash ***len*** property is renamed to ***length***.
+ 7. Anchors ***size*** option is renamed to ***strokeWidth***.
+ 8. AreaAnchor ***circle*** shape  is renamed to ***ellipse***.
+ 9. AreaAnchor ***color*** option is renamed to ***strokeColor***.
+ 10. Lines are shown and hidden with no animation by default.
+ 11. The line ***outline***, ***outlineSize*** and ***outlineColor*** options are merged into a single ***outline object***. `outline:{size:number,color:string}`.
+ 12. The line ***start/endPlug*** ***Size***, ***Color***, ***Outline*** options are merged into one ***start/endPlug*** object.
+ 13. The line ***start/endSocket*** and ***start/endSocketGravity***  options are merged into one ***start/endSocket*** object.
+ 14. The line ***start/endPlug*** getter returns the whole plug object. To get only the plug name, use ***start/endPlugName***.
+ 15. The line ***start/endSocketGravity*** getter returns **-1** in case ***auto*** is specified.
+ 16. The line options are set via ***setOptions*** only.
+
+>The ***dist/linkerline.min.js*** release was deprecated. You can use **[JsDelivr](https://www.jsdelivr.com/package/npm/linkerline)** instead.
 
 ## Why using it ?
 The original LeaderLine class lacks:
@@ -60,6 +71,25 @@ const line=new LinkerLine({
     parent:HTMLElement,
     start:HTMLElement,
     end:HTMLElement,
+    outline:{
+        size:0.3,
+        color:"green",
+    },
+    startPlug:"disc",
+    endPlug:{
+        name:"square",
+        size:2,
+        color:"red",
+        outline:{
+            size:1,
+            color:"black",
+        },
+    },
+    startSocket:"bottom",
+    endSocket:{
+        side:"top",
+        gravity:50,
+    },
 });
 //line.element => gets the line svg element
 ```
@@ -70,14 +100,16 @@ const line=new LinkerLine({
 
 |New Properties|Type|Description|
 |--------------|----|-----------|
-|element|SVG Element|The line svg element.|
-|removed|Boolean|Indicates whether the line was removed (line.remove was called) or not.
-|standalone|Boolean|Indicates whether the line is directly instantiated or not (ex: belongs to a LinkerLineChain instance).|
+|element|SVG Element|the line svg element.|
+|hidden|Boolean|indicates whether the line is hidden or not.
+|removed|Boolean|indicates whether the line was removed (line.remove was called) or not.
+|standalone|Boolean|indicates whether the line is directly instantiated or not (ex: belongs to a LinkerChain instance).|
 
 |Static Member|Type|Description|
 |-------------|------------|-----------|
-|removeAll|(filter) : void|removes standalone lines at once|
+|removeAll|(Function) : void|removes standalone lines at once|
 |positionAll|() : void|updates all the lines'positions at once|
+|findByElement|(Element) : LinkerLine\|null|gets the element corresponding LinkerLine instance
 
 ### removeAll
 The ***removeAll*** method takes a filter as argument and calls it once for each standalone line and removes those that meet the condition specified.
@@ -131,7 +163,7 @@ unlinkbtn.onclick=()=>{
 |startNode|HTMLElement|Same as line.start|
 |endNode|HTMLElement|Same as line.end|
 |nodesLinked|Boolean|Indicates whether the nodes are linked or unlinked|
-|hopIndex|Number|The hop index [>=1.4.0]|
+|hopIndex|Number|The hop index|
 
 ### Chain Properties:
 |Name|Type|Description|
@@ -141,8 +173,8 @@ unlinkbtn.onclick=()=>{
 |linked|Boolean|true if all nodes are fully linked, false otherwise|
 |partiallyLinked|Boolean|true if at least one line is visible, false otherwise|
 |destroyed|Boolean|indicates if the chain was destroyed or not|
-|append|(...nodes:Element) : void|appends new nodes to the end of the chain|
-|prepend|(...nodes:Element) : void|adds new nodes at the start of the chain|
+|append|(...nodes:HTMLElement) : void|appends new nodes to the end of the chain|
+|prepend|(...nodes:HTMLElement) : void|adds new nodes at the start of the chain|
 |destroy|() : void|destroys the chain|
 |link|(options?:LinkingOptions) : void|links the chain nodes. Only moves forwards|
 |unlink|(options?:LinkingOptions) : void|unlinks the chain nodes. Only moves backwards|
@@ -165,12 +197,36 @@ The **inLines** and **outLines** properties are defined because a single node ca
 
 ![InterChain Illustration](https://raw.githubusercontent.com/AhmedAyachi/RepoIllustrations/beta/LinkerLine/InterChainIllustration.gif)
 
+## LinkerLabel
+```
+import {LinkerLabel,LinkerLine} from "linkerline";
+
+const line=new LinkerLine({
+    parent,start,end,
+    startLabel:new LinkerLabel("start label",{
+        on:"element",
+        style:{
+            color:"red",
+            fontSize:20,
+            outlineColor:"blue",
+        },
+    }),
+    middleLabel:{
+        text:"middle label",
+        on:"path",
+    },
+    endLabel:"end label",
+});
+```
+If a ***string***  is passed, the default label styling is applied.
+You can pass a ***plain object*** instead of using the ***LinkerLabel*** class as shown above.
+
 ## LinkerAnchor
 
 |Member|Description|
 |------|-----------|
-|Point|targets a point inside an element|
 |Area|points to an area inside an element|
+|Point|targets a point inside an element|
 |MouseHover|shows/hides the line on mouse hover|
 
 ```

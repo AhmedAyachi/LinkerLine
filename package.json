@@ -4,29 +4,12 @@
   "description": "draws a line in a web page",
   "main": "src/index.js",
   "types": "src/index.d.ts",
-  "scripts": {
-    "build":"npx webpack"
-  },
-  "devDependencies": {
-    "webpack": "^5.96.1",
-    "webpack-cli": "^5.1.4"
-  },
   "keywords": [
-    "leader",
-    "linker",
-    "line",
-    "arrow",
-    "attention",
-    "highlight",
-    "spotlight",
-    "bubble",
-    "markup",
-    "Scroll",
-    "markup",
-    "svg",
-    "absolute",
-    "positioning",
-    "position"
+    "leader","linker","line",
+    "arrow","attention","highlight",
+    "spotlight","bubble","markup",
+    "scroll","markup","svg","absolute",
+    "positioning","position"
   ],
   "repository": {
     "type": "git",
