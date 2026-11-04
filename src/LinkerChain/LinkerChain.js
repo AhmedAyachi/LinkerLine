@@ -1,4 +1,4 @@
-import ChainLine from "./ChainLine";
+import ChainLine from "./ChainLine.js";
 
 
 export default class LinkerChain {

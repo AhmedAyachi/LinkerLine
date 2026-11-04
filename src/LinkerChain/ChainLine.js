@@ -1,4 +1,4 @@
-import LinkerLine from "../LinkerLine/LinkerLine";
+import LinkerLine from "../LinkerLine/LinkerLine.js";
 
 
 export default class ChainLine extends LinkerLine {

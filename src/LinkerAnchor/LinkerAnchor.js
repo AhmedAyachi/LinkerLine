@@ -1,5 +1,5 @@
-import LeaderLine from "../LeaderLine";
-import {toLeaderLineAnimationOptions} from "../index";
+import LeaderLine from "../LeaderLine.js";
+import {toLeaderLineAnimationOptions} from "../index.js";
 
 
 export default class LinkerAnchor {

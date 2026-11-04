@@ -1,5 +1,6 @@
 {
   "name": "linkerline",
+  "type": "module",
   "version": "1.6.1",
   "description": "draws a line in a web page",
   "main": "src/index.js",
