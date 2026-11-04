@@ -5,7 +5,7 @@ export default class LinkerLabel {
     
     readonly _id:number;
     readonly isRemoved:boolean;
-};
+}
 
 export type LinkerLabelOptions={
     /**
