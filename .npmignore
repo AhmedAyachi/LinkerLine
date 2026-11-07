@@ -2,9 +2,9 @@ node_modules
 .vscode
 ToDo.txt
 *.tgz
+.DS_Store
 .git/
 .gitignore
-.DS_Store
 dist
 package-lock.json
 webpack.config.js

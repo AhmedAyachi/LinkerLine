@@ -17,7 +17,7 @@ LinkerLine v2 introduces a new API. Instead of a single default export, the pack
 |LinkerPlug|for anything related to plugs|
 
 These API changes aim to facilitate maintainability and extensibility.
-For an API similar to LeaderLine's, you can still use version 1.6, but the latter will no longer receive updates nor fixes.
+For an API similar to LeaderLine's, you can still use version [v1.6](https://github.com/AhmedAyachi/LinkerLine/tree/v1.6), but the latter will no longer receive any updates or fixes.
 
 API Changes :
  1. **PointAnchor**,  **AreaAnchor** and **MouseHoverAnchor** are moved to the **LinkerAnchor** export.
